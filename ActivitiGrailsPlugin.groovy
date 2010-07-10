@@ -1,3 +1,18 @@
+/* Copyright 2006-2010 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
 import org.activiti.GrailsDbProcessEngineBuilder
 import org.activiti.IdentityService
 import org.activiti.ManagementService
@@ -8,9 +23,15 @@ import org.activiti.DbSchemaStrategy
 import grails.util.Environment
 import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
 
+ /**
+ *
+ * @author <a href='mailto:limcheekin@vobject.com'>Lim Chee Kin</a>
+ *
+ * @since 5.0.alpha3
+ */
 class ActivitiGrailsPlugin {
     // the plugin version
-    def version = "0.1"
+    def version = "5.0.alpha3"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.3.3 > *"
     // the other plugins this plugin depends on
@@ -21,11 +42,15 @@ class ActivitiGrailsPlugin {
     ]
 
     // TODO Fill in these fields
-    def author = "Your name"
-    def authorEmail = ""
-    def title = "Plugin summary/headline"
+    def author = "Lim Chee Kin"
+    def authorEmail = "limcheekin@vobject.com"
+    def title = "Grails Activiti Plugin"
     def description = '''\\
-Brief description of the plugin.
+ Grails Activiti Plugin is created to integrate Activiti BPM Suite and workflow system to Grails Framework. 
+ With the Grails Activiti Plugin, workflow application can be created at your fingertips! 
+
+ Project Site and Documentation: http://code.google.com/p/grails-activiti-plugin/
+ Support: http://code.google.com/p/grails-activiti-plugin/issues/list 
 '''
 
     // URL to the plugin's documentation
