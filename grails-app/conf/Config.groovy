@@ -1,5 +1,27 @@
-// configuration for plugin testing - will not be included in the plugin zip
+/* Copyright 2006-2010 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
  
+  /**
+ *
+ * Configuration for plugin testing - will not be included in the plugin zip
+ * 
+ * @author <a href='mailto:limcheekin@vobject.com'>Lim Chee Kin</a>
+ *
+ * @since 5.0.alpha3
+ */
+
 log4j = {
     // Example of changing the log pattern for the default console
     // appender:
@@ -23,32 +45,29 @@ log4j = {
     warn   'org.mortbay.log'
 }
 
+activiti {
+				processEngineName = "activiti-engine-default"
+			  databaseName = "h2" 
+			  dbSchemaStrategy = org.activiti.DbSchemaStrategy.CHECK_VERSION
+		    jdbcDriver = "org.h2.Driver"	
+		    jdbcUrl = "jdbc:h2:tcp://localhost/activiti"
+			  jdbcUsername = "sa"
+			  jdbcPassword = ""
+			  jobExecutorAutoActivation = false
+}
 environments {
     development {
         activiti {
 			  processEngineName = "activiti-engine-dev"
-			  databaseName = "h2" 
-			  dbSchemaStrategy = org.activiti.DbSchemaStrategy.CREATE_DROP
-		    jdbcDriver = "org.h2.Driver"	
-		    jdbcUrl = "jdbc:h2:tcp://localhost/activiti-dev"
-			  jdbcUsername = "sa"
-			  jdbcPassword = ""
-			  jobExecutorAutoActivation = false
         }
     }
     production {
         activiti {
 			  processEngineName = "activiti-engine-prod"
-			  databaseName = "h2" 
-			  dbSchemaStrategy = org.activiti.DbSchemaStrategy.CHECK_VERSION
-		    jdbcDriver = "org.h2.Driver"	
-		    jdbcUrl = "jdbc:h2:tcp://localhost/activiti-prod" 
-			  jdbcUsername = "sa"
-			  jdbcPassword = ""
 			  jobExecutorAutoActivation = true
         }
     }
-}
+}		
 
 // The following properties have been added by the Upgrade process...
 grails.views.default.codec="none" // none, html, base64

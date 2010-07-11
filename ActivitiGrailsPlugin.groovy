@@ -45,7 +45,7 @@ class ActivitiGrailsPlugin {
     def author = "Lim Chee Kin"
     def authorEmail = "limcheekin@vobject.com"
     def title = "Grails Activiti Plugin"
-    def description = '''\\
+    def description = '''
  Grails Activiti Plugin is created to integrate Activiti BPM Suite and workflow system to Grails Framework. 
  With the Grails Activiti Plugin, workflow application can be created at your fingertips! 
 
