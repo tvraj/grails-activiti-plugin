@@ -35,10 +35,10 @@ target ('default': "Creates a new activiti test.") {
     def name = argsMap["params"][0]
 	  def testType = argsMap["params"][1]?:"unit"
 	  if (!testType.equals("unit") && !testType.equals("integration")) {
-		   ant.echo message: "${testType} not supported!"
+		   ant.echo message: "'${testType}' not supported!"
 		   ant.echo message: "Create Activiti Test command (create-activiti-test) usage:"
-		   ant.echo message: "\tgrails create-activiti-test ClassUnderTest unit"
-		   ant.echo message: "\tgrails create-activiti-test ClassUnderTest integration"
+		   ant.echo message: "\tgrails create-activiti-test ${name} unit"
+		   ant.echo message: "\tgrails create-activiti-test ${name} integration"
 		   exit 1
 	  }
     createActivitiTest(name: name, testType: testType, suffix: "Tests")
