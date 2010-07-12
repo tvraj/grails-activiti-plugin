@@ -30,8 +30,6 @@ ant.mkdir(dir:"${basedir}/src/taskforms")
 * Due to javax.el package conflict with tomcat-core.jar of tomcat plugin
 */
 ant.move file:"${pluginBasedir}/lib/juel-2.1.0.jar", todir:"${basedir}/lib" 
-// default activiti-cfg.jar, to be overwritten by user for application specific settings
-// ant.move file:"${pluginBasedir}/lib/activiti-cfg.jar", todir:"${basedir}/lib" 
 updateConfig()
 ant.echo '''
 ************************************************************
@@ -56,20 +54,28 @@ private void updateConfig() {
 			  jdbcPassword = ""
 			  jobExecutorAutoActivation = false
 }
+
 environments {
     development {
         activiti {
 			  processEngineName = "activiti-engine-dev"
         }
     }
+    test {
+        activiti {
+			  processEngineName = "activiti-engine-test"
+			  dbSchemaStrategy = org.activiti.DbSchemaStrategy.CREATE_DROP
+			  jdbcUrl = "jdbc:h2:mem:activiti"
+        }
+    }	
     production {
         activiti {
 			  processEngineName = "activiti-engine-prod"
 			  jobExecutorAutoActivation = true
         }
     }
-}				
-			'''
+}
+'''
 		}
 	}
 }

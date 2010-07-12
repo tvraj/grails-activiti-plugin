@@ -32,28 +32,29 @@ ant.property (file : "application.properties")
 appName = ant.project.properties.'app.name'
 appVersion = ant.project.properties.'app.version'
 
-target(activitiPath: "Declare a path that includes the activiti-engine.jar and all its dependencies") {
-	ant.path(id: "activiti.libs.incl.dependencies") {
-		pathelement(location:"${basedir}/target/classes")
-		fileset(dir:"${basedir}/lib")
+target(deploy: "Deploy Activiti Business Archive (BAR) and JAR") {
+	depends(createJar, createBar)
+	event("DeployBarStart", [])
+	ant.taskdef (name: 'deployBar', classname : "org.activiti.impl.ant.DeployBarTask") {
+		classpath {
+			fileset(dir:"${activitiPluginDir}/lib") {
+				include(name: "activiti-cfg.jar")
+			}				
+		}			
+	}	
+	try {
+		ant.deployBar (file: "${basedir}/target/${appName}-${appVersion}.bar")
+	}finally {
+		event("DeployBarEnd", [])
 	}
 }
 
-target(deploy: "Deploy Activiti's Business Archive (BAR) and JAR") {
-	depends(createJar, activitiPath, createBar)
-	// ant.property (name: "activitiClassPath", refid: "activiti.libs.incl.dependencies")
-	// ant.echo (message: "ACTIVITI_CLASSPATH: ${ant.project.properties.activitiClassPath}")
-	ant.copy file:"${activitiPluginDir}/src/activiti.properties", todir:"${basedir}/target/classes" 
-	ant.taskdef (name: 'deployBar', classname : "org.activiti.impl.ant.DeployBarTask", classpathref: "activiti.libs.incl.dependencies")	
-	ant.deployBar (file: "${basedir}/target/${appName}-${appVersion}.bar")
-	ant.delete file:"${basedir}/target/classes/activiti.properties"
-}
-
-target(createBar: "Create JBpm Business Archive (BAR) that contains process files and process resources") {
+target(createBar: "Create Activiti Business Archive (BAR) that contains process files and process resources") {
 	ant.jar (destfile: "${basedir}/target/${appName}-${appVersion}.bar") {
 		fileset(dir:"${basedir}/grails-app/conf") {
 			include(name: "**/*.bpmn*.xml")
 		}		
+
 		if (new File("${basedir}/src/taskforms").exists()) {  
 			fileset(dir:"${basedir}/src/taskforms") {
 				include(name: "**/*.form")
@@ -70,14 +71,5 @@ target(createJar: "Create Java Archive (JAR) that contains process executables (
 		}		
 	}
 }
-
-private void printClassPath(classLoader) {
-	def urlPaths = classLoader.getURLs()
-    println "classLoader: $classLoader"
-    println urlPaths*.toString()
-    if (classLoader.parent) {
-         printClassPath(classLoader.parent)
-    }
-} 
 
 setDefaultTarget(deploy)

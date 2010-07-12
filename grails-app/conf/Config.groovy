@@ -55,19 +55,27 @@ activiti {
 			  jdbcPassword = ""
 			  jobExecutorAutoActivation = false
 }
+
 environments {
     development {
         activiti {
 			  processEngineName = "activiti-engine-dev"
         }
     }
+    test {
+        activiti {
+			  processEngineName = "activiti-engine-test"
+			  dbSchemaStrategy = org.activiti.DbSchemaStrategy.CREATE_DROP
+			  jdbcUrl = "jdbc:h2:mem:activiti"
+        }
+    }	
     production {
         activiti {
 			  processEngineName = "activiti-engine-prod"
 			  jobExecutorAutoActivation = true
         }
     }
-}		
+}	
 
 // The following properties have been added by the Upgrade process...
 grails.views.default.codec="none" // none, html, base64
