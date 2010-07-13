@@ -26,18 +26,20 @@
  
 includeTargets << grailsScript("_GrailsPackage")
 
-eventAllTestsStart = {
-		ant.echo "eventAllTestsStart invoked."
+eventTestPhasesStart = {
+		ant.echo "eventTestPhasesStart invoked."
+		ensureAllGeneratedFilesDeleted()	  
 	  createActivitiPropertiesFile()
 }
 
-eventAllTestsEnd = {
-    ant.echo "eventAllTestsEnd invoked."
+eventTestPhasesEnd = {
+    ant.echo "eventTestPhasesEnd invoked."
 	  ant.delete file:"${activitiPluginDir}/grails-app/conf/activiti.properties" 
 }
 
 eventDeployBarStart = { 
     ant.echo "eventDeployBarStart invoked."
+	  ensureAllGeneratedFilesDeleted()
     createActivitiPropertiesFile()
     	ant.jar (destfile: "${activitiPluginDir}/lib/activiti-cfg.jar") {
 			fileset(dir:"${activitiPluginDir}/grails-app/conf") {
@@ -52,6 +54,14 @@ eventDeployBarEnd = {
 	 ant.delete file:"${activitiPluginDir}/lib/activiti-cfg.jar" 
 }
 
+private void ensureAllGeneratedFilesDeleted() {
+	if (new File("${activitiPluginDir}/grails-app/conf/activiti.properties").exists()) {
+		ant.delete file:"${activitiPluginDir}/grails-app/conf/activiti.properties" 
+	}
+	if (new File("${activitiPluginDir}/lib/activiti-cfg.jar").exists()) {
+		ant.delete file:"${activitiPluginDir}/lib/activiti-cfg.jar" 
+	}	
+}
 
 private void createActivitiPropertiesFile() {
 		createConfig()

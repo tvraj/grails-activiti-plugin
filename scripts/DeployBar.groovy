@@ -35,13 +35,8 @@ appVersion = ant.project.properties.'app.version'
 target(deploy: "Deploy Activiti Business Archive (BAR) and JAR") {
 	depends(createJar, createBar)
 	event("DeployBarStart", [])
-	ant.taskdef (name: 'deployBar', classname : "org.activiti.impl.ant.DeployBarTask") {
-		classpath {
-			fileset(dir:"${activitiPluginDir}/lib") {
-				include(name: "activiti-cfg.jar")
-			}				
-		}			
-	}	
+	rootLoader.addURL(new File("${activitiPluginDir}/lib/activiti-cfg.jar").toURL())
+	ant.taskdef (name: 'deployBar', classname : "org.activiti.impl.ant.DeployBarTask")
 	try {
 		ant.deployBar (file: "${basedir}/target/${appName}-${appVersion}.bar")
 	}finally {
