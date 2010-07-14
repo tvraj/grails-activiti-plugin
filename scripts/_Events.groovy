@@ -28,31 +28,25 @@ import grails.util.BuildSettingsHolder as build
 includeTargets << grailsScript("_GrailsPackage")
 
 eventTestPhasesStart = {
-		ant.echo "eventTestPhasesStart invoked."
-		ensureAllGeneratedFilesDeleted()	  
-	  createActivitiPropertiesFile(build.settings.resourcesDir.toString())
+	ant.echo "eventTestPhasesStart invoked."
+	ensureAllGeneratedFilesDeleted()	  
+	createActivitiPropertiesFile(build.settings.resourcesDir.toString())
 }
 
 eventTestPhasesEnd = {
     ant.echo "eventTestPhasesEnd invoked."
-	  ant.delete file:"${build.settings.resourcesDir}/activiti.properties" 
+	ant.delete file:"${build.settings.resourcesDir}/activiti.properties" 
 }
 
 eventDeployBarStart = { 
-    ant.echo "eventDeployBarStart invoked."
-	  ensureAllGeneratedFilesDeleted()
+	ant.echo "eventDeployBarStart invoked."
+	ensureAllGeneratedFilesDeleted()
     createActivitiPropertiesFile("${activitiPluginDir}/grails-app/conf")
-    	ant.jar (destfile: "${activitiPluginDir}/lib/activiti-cfg.jar") {
-			fileset(dir: "${activitiPluginDir}/grails-app/conf") {
-				include(name: "activiti.properties")
-			}		
-		}
-		ant.delete file:"${activitiPluginDir}/grails-app/conf/activiti.properties" 
 }
  
 eventDeployBarEnd = { 
-	 ant.echo "eventDeployBarEnd invoked."
-	 ant.delete file:"${activitiPluginDir}/lib/activiti-cfg.jar" 
+	ant.echo "eventDeployBarEnd invoked."
+	ant.delete file:"${activitiPluginDir}/grails-app/conf/activiti.properties" 
 }
 
 private void ensureAllGeneratedFilesDeleted() {
@@ -62,16 +56,13 @@ private void ensureAllGeneratedFilesDeleted() {
 	if (new File("${activitiPluginDir}/grails-app/conf/activiti.properties").exists()) {
 		  ant.delete file:"${activitiPluginDir}/grails-app/conf/activiti.properties" 
 	}	
-	if (new File("${activitiPluginDir}/lib/activiti-cfg.jar").exists()) {
-			ant.delete file:"${activitiPluginDir}/lib/activiti-cfg.jar" 
-	}	
 }
 
 private void createActivitiPropertiesFile(String activitiPropertiesFilePath) {
-		createConfig()
-		def activitiPropertiesFile = new File(activitiPropertiesFilePath, "activiti.properties")
-		activitiPropertiesFile.withWriter {
-			it.writeLine """database=${config.activiti.databaseName}
+	createConfig()
+	def activitiPropertiesFile = new File(activitiPropertiesFilePath, "activiti.properties")
+	activitiPropertiesFile.withWriter {
+		it.writeLine """database=${config.activiti.databaseName}
 jdbc.driver=${config.activiti.jdbcDriver}
 jdbc.url=${config.activiti.jdbcUrl}
 jdbc.username=${config.activiti.jdbcUsername}
@@ -80,6 +71,6 @@ db.schema.strategy=${config.activiti.dbSchemaStrategy==org.activiti.DbSchemaStra
 job.executor.auto.activate=${config.activiti.jobExecutorAutoActivation}
 """
 	  }
-	  ant.echo "Content of generated activiti.properties file:"
-	  ant.echo activitiPropertiesFile.text
+	 ant.echo "Content of generated activiti.properties file:"
+	 ant.echo activitiPropertiesFile.text
 }	

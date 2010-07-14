@@ -27,9 +27,10 @@ ant.mkdir(dir:"${basedir}/src/taskforms")
 /* 
 * Required to move juel-2.1.0.jar to ${basedir}/lib 
 * to solve java.lang.NoSuchMethodError: javax.el.ExpressionFactory.newInstance().
-* Due to javax.el package conflict with tomcat-core.jar of tomcat plugin
+* Due to javax.el package conflict with tomcat-core.jar of tomcat plugin.
+* ant.move and ant.delete not working in windows environment
 */
-ant.move file:"${pluginBasedir}/lib/juel-2.1.0.jar", todir:"${basedir}/lib" 
+ant.copy file:"${pluginBasedir}/lib/juel-2.1.0.jar", todir:"${basedir}/lib", overwrite:true
 updateConfig()
 ant.echo '''
 ************************************************************
@@ -38,40 +39,40 @@ ant.echo '''
 * please verify that the values are correct.               *
 ************************************************************
 '''
-private void updateConfig() {
 
+private void updateConfig() {
 	def configFile = new File(basedir, 'grails-app/conf/Config.groovy')
 	if (configFile.exists()) {
 		configFile.withWriterAppend {
 			it.writeLine '\n// Added by the Grails Activiti plugin:'
 			it.writeLine '''activiti {
-				processEngineName = "activiti-engine-default"
-			  databaseName = "h2" 
-			  dbSchemaStrategy = org.activiti.DbSchemaStrategy.CHECK_VERSION
+			processEngineName = "activiti-engine-default"
+			databaseName = "h2" 
+			dbSchemaStrategy = org.activiti.DbSchemaStrategy.CHECK_VERSION
 		    jdbcDriver = "org.h2.Driver"	
 		    jdbcUrl = "jdbc:h2:tcp://localhost/activiti"
-			  jdbcUsername = "sa"
-			  jdbcPassword = ""
-			  jobExecutorAutoActivation = false
+			jdbcUsername = "sa"
+			jdbcPassword = ""
+			jobExecutorAutoActivation = false
 }
 
 environments {
     development {
         activiti {
-			  processEngineName = "activiti-engine-dev"
+			processEngineName = "activiti-engine-dev"
         }
     }
     test {
         activiti {
-			  processEngineName = "activiti-engine-test"
-			  dbSchemaStrategy = org.activiti.DbSchemaStrategy.CREATE_DROP
-			  jdbcUrl = "jdbc:h2:mem:activiti"
+			processEngineName = "activiti-engine-test"
+			dbSchemaStrategy = org.activiti.DbSchemaStrategy.CREATE_DROP
+			jdbcUrl = "jdbc:h2:mem:activiti"
         }
     }	
     production {
         activiti {
-			  processEngineName = "activiti-engine-prod"
-			  jobExecutorAutoActivation = true
+			processEngineName = "activiti-engine-prod"
+			jobExecutorAutoActivation = true
         }
     }
 }

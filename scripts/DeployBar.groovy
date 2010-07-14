@@ -12,8 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import org.codehaus.groovy.grails.commons.GrailsApplication
-import grails.util.GrailsUtil
 
  /**
  *
@@ -35,11 +33,13 @@ appVersion = ant.project.properties.'app.version'
 target(deploy: "Deploy Activiti Business Archive (BAR) and JAR") {
 	depends(createJar, createBar)
 	event("DeployBarStart", [])
-	rootLoader.addURL(new File("${activitiPluginDir}/lib/activiti-cfg.jar").toURL())
+	rootLoader.addURL(new File("${activitiPluginDir}/grails-app/conf").toURL())
 	ant.taskdef (name: 'deployBar', classname : "org.activiti.impl.ant.DeployBarTask")
 	try {
 		ant.deployBar (file: "${basedir}/target/${appName}-${appVersion}.bar")
-	}finally {
+	} catch (Exception e) {
+		e.printStackTrace()
+	} finally {
 		event("DeployBarEnd", [])
 	}
 }
