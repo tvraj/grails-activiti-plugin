@@ -46,36 +46,31 @@ private void updateConfig() {
 		configFile.withWriterAppend {
 			it.writeLine '\n// Added by the Grails Activiti plugin:'
 			it.writeLine '''activiti {
-			processEngineName = "activiti-engine-default"
-			databaseName = "h2" 
-			dbSchemaStrategy = org.activiti.DbSchemaStrategy.CHECK_VERSION
-		    jdbcDriver = "org.h2.Driver"	
-		    jdbcUrl = "jdbc:h2:tcp://localhost/activiti"
-			jdbcUsername = "sa"
-			jdbcPassword = ""
-			jobExecutorAutoActivation = false
+				processEngineName = "activiti-engine-default"
+			  databaseName = "h2" 
+			  dbSchemaStrategy = "check-version" // one of "create", "create-drop", "check-version", "drop-create"
+			  jobExecutorAutoActivation = false
 }
 
 environments {
     development {
         activiti {
-			processEngineName = "activiti-engine-dev"
+			  processEngineName = "activiti-engine-dev"
         }
     }
     test {
         activiti {
-			processEngineName = "activiti-engine-test"
-			dbSchemaStrategy = org.activiti.DbSchemaStrategy.CREATE_DROP
-			jdbcUrl = "jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000"
+			  processEngineName = "activiti-engine-test"
+			  dbSchemaStrategy = "create-drop"
         }
     }	
     production {
         activiti {
-			processEngineName = "activiti-engine-prod"
-			jobExecutorAutoActivation = true
+			  processEngineName = "activiti-engine-prod"
+			  jobExecutorAutoActivation = true
         }
     }
-}
+}	
 '''
 		}
 	}

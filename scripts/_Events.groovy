@@ -63,11 +63,11 @@ private void createActivitiPropertiesFile(String activitiPropertiesFilePath) {
 	def activitiPropertiesFile = new File(activitiPropertiesFilePath, "activiti.properties")
 	activitiPropertiesFile.withWriter {
 		it.writeLine """database=${config.activiti.databaseName}
-jdbc.driver=${config.activiti.jdbcDriver}
-jdbc.url=${config.activiti.jdbcUrl}
-jdbc.username=${config.activiti.jdbcUsername}
-jdbc.password=${config.activiti.jdbcPassword}
-db.schema.strategy=${config.activiti.dbSchemaStrategy==org.activiti.DbSchemaStrategy.CREATE_DROP?"create-drop":"check-version"}
+jdbc.driver=${config.dataSource.driverClassName}
+jdbc.url=${config.dataSource.url}
+jdbc.username=${config.dataSource.username}
+jdbc.password=${config.dataSource.password}
+db.schema.strategy=${config.activiti.dbSchemaStrategy?:"create-drop"}
 job.executor.auto.activate=${config.activiti.jobExecutorAutoActivation}
 """
 	  }

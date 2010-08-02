@@ -48,11 +48,7 @@ log4j = {
 activiti {
 				processEngineName = "activiti-engine-default"
 			  databaseName = "h2" 
-			  dbSchemaStrategy = org.activiti.DbSchemaStrategy.CHECK_VERSION
-		    jdbcDriver = "org.h2.Driver"	
-		    jdbcUrl = "jdbc:h2:tcp://localhost/activiti"
-			  jdbcUsername = "sa"
-			  jdbcPassword = ""
+			  dbSchemaStrategy = "check-version" // one of "create", "create-drop", "check-version", "drop-create"
 			  jobExecutorAutoActivation = false
 }
 
@@ -65,8 +61,7 @@ environments {
     test {
         activiti {
 			  processEngineName = "activiti-engine-test"
-			  dbSchemaStrategy = org.activiti.DbSchemaStrategy.CREATE_DROP
-			  jdbcUrl = "jdbc:h2:mem:activiti"
+			  dbSchemaStrategy = "create-drop"
         }
     }	
     production {

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
  
-import org.activiti.DbProcessEngineBuilder
+import org.activiti.GrailsDbProcessEngineBuilder
 import org.activiti.IdentityService
 import org.activiti.ManagementService
 import org.activiti.ProcessEngine
@@ -61,25 +61,26 @@ class ActivitiGrailsPlugin {
     }
 
     def doWithSpring = {
-    	if (Environment.current == Environment.DEVELOPMENT ||
-				Environment.current == Environment.PRODUCTION) {
     	println "Activiti Process Engine Initialization..."
-		processEngineBuilder(DbProcessEngineBuilder) { 
-			processEngineName = CH.config.activiti.processEngineName?:"grails-activiti-noconfig"
-			databaseName = CH.config.activiti.databaseName?:"h2-in-memory" 
-			dbSchemaStrategy = CH.config.activiti.dbSchemaStrategy?:DbSchemaStrategy.CREATE_DROP
-			jdbcDriver = CH.config.activiti.jdbcDriver?:"org.h2.Driver"	
-		    jdbcUrl = CH.config.activiti.jdbcUrl?:"jdbc:h2:mem:activiti" 
-			jdbcUsername = CH.config.activiti.jdbcUsername?:"sa"
-			jdbcPassword = CH.config.activiti.jdbcPassword?:""
-			jobExecutorAutoActivation = CH.config.activiti.jobExecutorAutoActivation?:false
-		}
+    	def configurationProperties = [
+			"process.engine.name":CH.config.activiti.processEngineName?:"grails-activiti-noconfig",
+			"database":CH.config.activiti.databaseName?:"h2-in-memory",
+			"jdbc.driver":CH.config.dataSource.driverClassName,
+			"jdbc.url":CH.config.dataSource.url,
+			"jdbc.username":CH.config.dataSource.username,
+			"jdbc.password":CH.config.dataSource.password,
+			"db.schema.strategy":CH.config.activiti.dbSchemaStrategy?:"create-drop",
+			"job.executor.auto.activate":CH.config.activiti.jobExecutorAutoActivation?:false
+    	] as Properties
+    	processEngineBuilder(GrailsDbProcessEngineBuilder, configurationProperties) { bean ->
+			bean.factoryMethod = "getInstance"
+    	}
     	processEngine(processEngineBuilder:"buildProcessEngine")
     	processService(processEngine:"getProcessService") 
     	taskService(processEngine:"getTaskService") 
     	managementService(processEngine:"getManagementService") 
     	identityService(processEngine:"getIdentityService")
-    	}
+    	historicDataService(processEngine:"getHistoricDataService")
     }
 
     def doWithDynamicMethods = { ctx ->
