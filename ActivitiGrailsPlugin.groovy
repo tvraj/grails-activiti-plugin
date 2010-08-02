@@ -13,7 +13,7 @@
  * limitations under the License.
  */
  
-import org.activiti.GrailsDbProcessEngineBuilder
+import org.activiti.DbProcessEngineBuilder
 import org.activiti.IdentityService
 import org.activiti.ManagementService
 import org.activiti.ProcessEngine
@@ -31,7 +31,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
  */
 class ActivitiGrailsPlugin {
     // the plugin version
-    def version = "5.0.alpha3"
+    def version = "5.0.alpha4"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.3.3 > *"
     // the other plugins this plugin depends on
@@ -64,7 +64,7 @@ class ActivitiGrailsPlugin {
     	if (Environment.current == Environment.DEVELOPMENT ||
 				Environment.current == Environment.PRODUCTION) {
     	println "Activiti Process Engine Initialization..."
-		processEngineBuilder(GrailsDbProcessEngineBuilder) { 
+		processEngineBuilder(DbProcessEngineBuilder) { 
 			processEngineName = CH.config.activiti.processEngineName?:"grails-activiti-noconfig"
 			databaseName = CH.config.activiti.databaseName?:"h2-in-memory" 
 			dbSchemaStrategy = CH.config.activiti.dbSchemaStrategy?:DbSchemaStrategy.CREATE_DROP

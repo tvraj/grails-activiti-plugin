@@ -25,12 +25,12 @@
 
 ant.mkdir(dir:"${basedir}/src/taskforms")
 /* 
-* Required to move juel-2.1.0.jar to ${basedir}/lib 
+* Required to move juel-2.2.1.jar to ${basedir}/lib 
 * to solve java.lang.NoSuchMethodError: javax.el.ExpressionFactory.newInstance().
 * Due to javax.el package conflict with tomcat-core.jar of tomcat plugin.
 * ant.move and ant.delete not working in windows environment
 */
-ant.copy file:"${pluginBasedir}/lib/juel-2.1.0.jar", todir:"${basedir}/lib", overwrite:true
+ant.copy file:"${pluginBasedir}/lib/juel-2.2.1.jar", todir:"${basedir}/lib", overwrite:true
 updateConfig()
 ant.echo '''
 ************************************************************
@@ -66,7 +66,7 @@ environments {
         activiti {
 			processEngineName = "activiti-engine-test"
 			dbSchemaStrategy = org.activiti.DbSchemaStrategy.CREATE_DROP
-			jdbcUrl = "jdbc:h2:mem:activiti"
+			jdbcUrl = "jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000"
         }
     }	
     production {
