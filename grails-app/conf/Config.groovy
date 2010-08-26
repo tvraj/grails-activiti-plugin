@@ -48,7 +48,7 @@ log4j = {
 activiti {
 				processEngineName = "activiti-engine-default"
 			  databaseName = "h2" 
-			  dbSchemaStrategy = "check-version" // one of "create", "create-drop", "check-version", "drop-create"
+			  dbSchemaStrategy = "create-drop" // one of "create", "create-drop", "check-version", "drop-create"
 			  jobExecutorAutoActivation = false
 }
 
@@ -61,12 +61,12 @@ environments {
     test {
         activiti {
 			  processEngineName = "activiti-engine-test"
-			  dbSchemaStrategy = "create-drop"
         }
     }	
     production {
         activiti {
 			  processEngineName = "activiti-engine-prod"
+			  dbSchemaStrategy = "check-version"
 			  jobExecutorAutoActivation = true
         }
     }
