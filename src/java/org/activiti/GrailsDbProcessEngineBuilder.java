@@ -15,7 +15,7 @@
 package org.activiti;
 
 import java.util.Properties;
-
+import org.activiti.engine.ProcessEngineBuilder;
 /**
  *
  *  This class is created to fix org.springframework.beans.NotWritablePropertyException: 
@@ -26,7 +26,7 @@ import java.util.Properties;
  * @since 5.0.alpha3
  */
 public class GrailsDbProcessEngineBuilder {
-	public static DbProcessEngineBuilder getInstance(Properties configurationProperties) {
-	    return new DbProcessEngineBuilder().configureFromProperties(configurationProperties);
+	public static ProcessEngineBuilder getInstance(Properties configurationProperties) {
+	    return new ProcessEngineBuilder().configureFromProperties(configurationProperties);
 	  }
 }

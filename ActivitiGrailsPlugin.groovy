@@ -14,12 +14,6 @@
  */
  
 import org.activiti.GrailsDbProcessEngineBuilder
-import org.activiti.IdentityService
-import org.activiti.ManagementService
-import org.activiti.ProcessEngine
-import org.activiti.ProcessService
-import org.activiti.TaskService
-import org.activiti.DbSchemaStrategy
 import grails.util.Environment
 import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
 
@@ -31,7 +25,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
  */
 class ActivitiGrailsPlugin {
     // the plugin version
-    def version = "5.0.alpha4"
+    def version = "5.0.beta1"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.3.3 > *"
     // the other plugins this plugin depends on
@@ -41,7 +35,6 @@ class ActivitiGrailsPlugin {
             "grails-app/views/error.gsp"
     ]
 
-    // TODO Fill in these fields
     def author = "Lim Chee Kin"
     def authorEmail = "limcheekin@vobject.com"
     def title = "Grails Activiti Plugin - Enabled Activiti BPM Suite support for Grails"
@@ -76,11 +69,12 @@ class ActivitiGrailsPlugin {
 			bean.factoryMethod = "getInstance"
     	}
     	processEngine(processEngineBuilder:"buildProcessEngine")
-    	processService(processEngine:"getProcessService") 
+    	runtimeService(processEngine:"getRuntimeService") 
+			repositoryService(processEngine:"getRepositoryService") 
     	taskService(processEngine:"getTaskService") 
     	managementService(processEngine:"getManagementService") 
     	identityService(processEngine:"getIdentityService")
-    	historicDataService(processEngine:"getHistoricDataService")
+    	historyService(processEngine:"getHistoryService")
     }
 
     def doWithDynamicMethods = { ctx ->
