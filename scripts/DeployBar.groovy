@@ -1,4 +1,4 @@
-/* Copyright 2006-2010 the original author or authors.
+/* Copyright 2010 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ target(deploy: "Deploy Activiti Business Archive (BAR) and JAR") {
 	depends(createJar, createBar)
 	event("DeployBarStart", [])
 	rootLoader.addURL(new File("${activitiPluginDir}/grails-app/conf").toURL())
-	ant.taskdef (name: 'deployBar', classname : "org.activiti.impl.ant.DeployBarTask")
+	ant.taskdef (name: 'deployBar', classname : "org.activiti.engine.impl.ant.DeployBarTask")
 	try {
 		ant.deployBar (file: "${basedir}/target/${appName}-${appVersion}.bar")
 	} catch (Exception e) {
