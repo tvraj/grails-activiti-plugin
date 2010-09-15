@@ -1,4 +1,4 @@
-/* Copyright 2006-2010 the original author or authors.
+/* Copyright 2010 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
  */
 class ActivitiGrailsPlugin {
     // the plugin version
-    def version = "5.0.beta1"
+    def version = "5.0.beta2"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.3.3 > *"
     // the other plugins this plugin depends on
