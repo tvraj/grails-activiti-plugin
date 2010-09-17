@@ -17,7 +17,7 @@
  *
  * @author <a href='mailto:limcheekin@vobject.com'>Lim Chee Kin</a>
  *
- * @since 5.0.beta1
+ * @since 5.0.beta2
  */
  
 includeTargets << grailsScript("Init")
@@ -32,13 +32,13 @@ target(install: "Install Vacation Request Sample Application") {
 		}		
 		ant.copy (todir:"${basedir}/grails-app/domain") {
 			fileset dir:"${vacationRequestDir}/grails-app/domain"
-		}			
-		ant.copy (todir:"${basedir}/grails-app/services") {
-			fileset dir:"${vacationRequestDir}/grails-app/services"
-		}		
-		ant.copy (todir:"${basedir}/test/integration") {
-			fileset dir:"${vacationRequestDir}/test/integration"
-		}							
+		}	
+		ant.copy (todir:"${basedir}/grails-app/views") {
+			fileset dir:"${vacationRequestDir}/grails-app/views"
+		}						
+		ant.copy (todir:"${basedir}/src/groovy") {
+			fileset dir:"${vacationRequestDir}/src/groovy"
+		}					
 }
 
 setDefaultTarget(install)

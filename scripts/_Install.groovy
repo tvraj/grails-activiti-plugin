@@ -15,8 +15,6 @@
  
   /**
  *
- * Post installation script that create taskforms directory and append 
- *  activiti's configuration to grails-app/conf/Config.groovy.
  * 
  * @author <a href='mailto:limcheekin@vobject.com'>Lim Chee Kin</a>
  *
@@ -31,6 +29,17 @@ ant.mkdir(dir:"${basedir}/src/taskforms")
 * ant.move and ant.delete not working in windows environment
 */
 ant.copy file:"${pluginBasedir}/lib/juel-2.2.1.jar", todir:"${basedir}/lib", overwrite:true
+
+// Backup existing files
+ant.move file:"${basedir}/grails-app/views/index.gsp", tofile:"${basedir}/grails-app/views/index.bak"
+ant.move file:"${basedir}/grails-app/views/layouts/main.gsp", tofile:"${basedir}/grails-app/views/layouts/main.bak"
+
+// Copy plugin related files
+ant.copy file:"${pluginBasedir}/grails-app/views/index.gsp", todir:"${basedir}/grails-app/views"
+ant.copy file:"${pluginBasedir}/grails-app/views/layouts/main.gsp", todir:"${basedir}/grails-app/views/layouts"
+ant.copy file:"${pluginBasedir}/web-app/images/grails_activiti_logo.png", todir:"${basedir}/web-app/images"
+ant.copy file:"${pluginBasedir}/web-app/images/grails_activiti_favicon.ico", todir:"${basedir}/web-app/images"
+
 updateConfig()
 ant.echo '''
 ************************************************************
@@ -48,7 +57,6 @@ private void updateConfig() {
 			it.writeLine '''activiti {
 				processEngineName = "activiti-engine-default"
 			  databaseName = "h2" 
-			  dbSchemaStrategy = "create-drop" // one of "create", "create-drop", "check-version", "drop-create"
 			  jobExecutorAutoActivation = false
 }
 
@@ -56,11 +64,13 @@ environments {
     development {
         activiti {
 			  processEngineName = "activiti-engine-dev"
+			  dbSchemaStrategy = "create-drop" // one of "create", "create-drop", "check-version", "drop-create"			  
         }
     }
     test {
         activiti {
 			  processEngineName = "activiti-engine-test"
+			  dbSchemaStrategy = "create-drop"
         }
     }	
     production {

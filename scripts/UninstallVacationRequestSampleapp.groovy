@@ -17,7 +17,7 @@
  *
  * @author <a href='mailto:limcheekin@vobject.com'>Lim Chee Kin</a>
  *
- * @since 5.0.beta1
+ * @since 5.0.beta2
  */
  
 includeTargets << grailsScript("Init")
@@ -28,8 +28,8 @@ target(uninstall: "Uninstall Vacation Request Sample Application") {
 		ant.delete file:"${basedir}/grails-app/conf/VacationRequest.bpmn20.xml"
 		ant.delete dir:"${basedir}/grails-app/controllers/${vacationRequestDir}"
 		ant.delete dir:"${basedir}/grails-app/domain/${vacationRequestDir}"
-		ant.delete dir:"${basedir}/grails-app/services/${vacationRequestDir}"
-		ant.delete dir:"${basedir}/test/integration/${vacationRequestDir}"
+		ant.delete dir:"${basedir}/grails-app/views/${vacationRequestDir}"
+		ant.delete dir:"${basedir}/src/groovy/${vacationRequestDir}"
 }
 
 setDefaultTarget(uninstall)

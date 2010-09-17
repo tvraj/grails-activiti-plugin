@@ -12,32 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package vacationRequest
-  
-  /**
+package org.grails.activiti
+
+ /**
  *
  * @author <a href='mailto:limcheekin@vobject.com'>Lim Chee Kin</a>
  *
- * @since 5.0.beta1
+ * @since 5.0.beta2
  */
-class VacationRequest {
-	String employeeName
-	Integer numberOfDays
-	String vacationDescription
-	Boolean vacationApproved
-	String approvalRemark
-	Boolean resendRequest 
-  Date dateCreated
-  Date lastUpdated
-  	
-  static constraints = {
-		employeeName blank:false, size:5..50
-		numberOfDays range:1..14
-		vacationDescription blank:false, size:5..255
-		vacationApproved nullable:true
-		approvalRemark nullable:true
-		resendRequest nullable:true
-		dateCreated blank:false
-    lastUpdated nullable:true		
-    }
+enum ApprovalStatus {
+	PENDING,
+	APPROVED,
+	REJECTED
 }

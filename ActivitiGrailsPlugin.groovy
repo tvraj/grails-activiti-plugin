@@ -13,6 +13,9 @@
  * limitations under the License.
  */
  
+import org.activiti.engine.runtime.ProcessInstance
+import org.activiti.engine.task.Task
+import grails.util.GrailsNameUtils
 import org.activiti.GrailsDbProcessEngineBuilder
 import grails.util.Environment
 import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
@@ -48,6 +51,9 @@ class ActivitiGrailsPlugin {
 
     // URL to the plugin's documentation
     def documentation = "http://grails.org/plugin/activiti"
+	
+    def watchedResources = "file:./grails-app/controllers/*Controller.groovy"
+ 	
 
     def doWithWebDescriptor = { xml ->
         // TODO Implement additions to web.xml (optional), this event occurs before 
@@ -75,12 +81,129 @@ class ActivitiGrailsPlugin {
     	managementService(processEngine:"getManagementService") 
     	identityService(processEngine:"getIdentityService")
     	historyService(processEngine:"getHistoryService")
+		
+			activitiService(org.grails.activiti.ActivitiService) {
+				runtimeService = ref("runtimeService")
+				taskService = ref("taskService")
+			}		
     }
 
     def doWithDynamicMethods = { ctx ->
-        // TODO Implement registering dynamic methods to classes (optional)
+    	assert ctx.activitiService
+			application.controllerClasses.each { controllerClass ->
+				 if (controllerClass.clazz.activiti) { 
+					 controllerClass.metaClass.getActivitiService = {-> return ctx.activitiService}
+					 // addActivitiActions(controllerClass) Not possible, find out more at URL below:
+					 // http://archive.jrcs.codehaus.org/lists/org.codehaus.grails.dev/msg/25487189.post@talk.nabble.com
+					 addActivitiMethods(controllerClass)
+				 }
+			} 				
     }
 
+		def addActivitiMethods(controllerClass) {
+				controllerClass.metaClass.start = { Map params ->
+						activitiService.with {					
+								params.username = session.username
+								ProcessInstance pi = startProcess(params)
+								Task task = getUnassignedTask(session.username, pi.id)
+								claimTask(task.id, session.username)
+								redirect uri:getTaskForm(task.id)		
+						}
+				}
+				
+				controllerClass.metaClass.startTask = { String taskId ->
+						activitiService.with {					
+							claimTask(taskId, session.username)
+							redirect uri:getTaskForm(taskId)		
+						}
+				}
+							
+				controllerClass.metaClass.getForm = { String taskId ->
+						redirect uri:activitiService.getTaskForm(taskId)
+				}
+				
+				controllerClass.metaClass.saveTask = { Map params ->
+					 params.domainClassName = getDomainClassName(delegate)
+					 activitiService.setTaskFormUri(params)
+				}				
+				
+				controllerClass.metaClass.completeTask = { Map params ->
+					 params.domainClassName = getDomainClassName(delegate)
+					 activitiService.completeTask(params.taskId, params)
+				}						
+						
+				controllerClass.metaClass.claimTask = { String taskId ->
+					 activitiService.claimTask(taskId, session.username)
+				}			
+				
+				controllerClass.metaClass.revokeTask = { String taskId ->
+					 activitiService.claimTask(taskId, null)
+				}					
+				
+				controllerClass.metaClass.deleteTask = { String taskId ->
+					 String domainClassName = null		
+					 if (delegate.class != org.grails.activiti.TaskController) {
+						  	domainClassName = getDomainClassName(delegate)
+					  }
+					 activitiService.deleteTask(taskId, domainClassName)
+				}		
+		
+				controllerClass.metaClass.setAssignee = { String taskId, String username ->		
+					 if (username) {
+						 activitiService.setAssignee(taskId, username)
+					 } else {
+						 revokeTask(taskId)
+					 }
+				}						
+				
+				controllerClass.metaClass.setPriority = { String taskId, int priority ->		
+					 activitiService.setPriority(taskId, priority)
+				}					
+						
+		
+				controllerClass.metaClass.getUnassignedTasksCount = {->
+						activitiService.getUnassignedTasksCount(session.username)
+				}
+				
+				controllerClass.metaClass.getAssignedTasksCount = {->
+						activitiService.getAssignedTasksCount(session.username)
+				}		
+				
+				controllerClass.metaClass.getAllTasksCount = {->
+						activitiService.getAllTasksCount()
+				}
+				
+				controllerClass.metaClass.findUnassignedTasks = { Map params ->
+						params.username=session.username
+				    if (!params.sort) {
+							params.sort = "id"
+							params.order = "desc"
+				    	}			
+						activitiService.findUnassignedTasks(params)
+				}
+				
+				controllerClass.metaClass.findAssignedTasks = { Map params ->
+						params.username=session.username
+				    if (!params.sort) {
+							params.sort = "id"
+							params.order = "desc"
+				    	}			
+						activitiService.findAssignedTasks(params)
+				}
+				
+				controllerClass.metaClass.findAllTasks = { Map params ->
+				    if (!params.sort) {
+							params.sort = "id"
+							params.order = "desc"
+				    	}			
+						activitiService.findAllTasks(params)
+				}				
+		}  
+
+		private getDomainClassName(delegate) {
+			 return "${delegate.class.package.name}.${GrailsNameUtils.getLogicalName(delegate.class.name, 'Controller')}"
+		}
+		
     def doWithApplicationContext = { applicationContext ->
         // TODO Implement post initialization spring config (optional)
     }
@@ -89,6 +212,7 @@ class ActivitiGrailsPlugin {
         // TODO Implement code that is executed when any artefact that this plugin is
         // watching is modified and reloaded. The event contains: event.source,
         // event.application, event.manager, event.ctx, and event.plugin.
+				println "event.source = $event.source"
     }
 
     def onConfigChange = { event ->

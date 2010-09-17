@@ -14,17 +14,22 @@
  */
 package vacationRequest
 
-  /**
+import org.activiti.engine.impl.bpmn.BpmnActivityBehavior
+import org.activiti.pvm.activity.ActivityBehavior
+import org.activiti.pvm.activity.ActivityExecution
+
+ 
+ /**
  *
  * @author <a href='mailto:limcheekin@vobject.com'>Lim Chee Kin</a>
  *
- * @since 5.0.beta1
+ * @since 5.0.beta2
  */
-class VacationRequestController {
-	  def scaffold = true
-		def vacationRequestService
-    
-		def startForm = {
-			 redirect uri: vacationRequestService.startForm
-		}
+class MailSender extends BpmnActivityBehavior implements ActivityBehavior {
+  private static String TO = "emailTo";
+  
+  public void execute(ActivityExecution execution) throws Exception {
+    String to = (String) execution.getVariable(TO)
+    	println "*** Email message sent to ${to}"
+  }
 }
