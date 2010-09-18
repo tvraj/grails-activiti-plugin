@@ -95,24 +95,15 @@ class ActivitiService {
 				}
 				findTasks(null, null, getOffset(params.offset), params.max, orderBy)
     	}
-	  
+	
 		private getOffset(def offset) {
-				def offsetValue
-				if (offset) {
-						if (offset instanceof Integer) {
-							offsetValue = offset
-						} else {
-							offsetValue = Integer.parseInt(offset)
-						}
-				} else {
-					offsetValue = 0
-				}
-				return offsetValue
-		}			  				
+				return offset?Integer.parseInt(offset):0
+		}										  			  				
 	   			   
 	  def deleteTask(String taskId, String domainClassName = null) {
-		  	deleteDomainObject(taskId, domainClassName)
+		  	String id = deleteDomainObject(taskId, domainClassName)
 		  	taskService.deleteTask(taskId)
+			  return id
     	}			  
 	  
 	  private deleteDomainObject(String taskId, String domainClassName) {
@@ -122,6 +113,7 @@ class ActivitiService {
 				  	def domainClass = AH.getApplication().classLoader.loadClass(domainClassName?:getDomainClassName(task))
 					  domainClass.get(Long.valueOf(id))?.delete(flush: true)
 			  }
+			  return id
 	  }
 	  
 	  private getDomainObjectId(Task task) {

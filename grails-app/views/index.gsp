@@ -20,7 +20,6 @@
  --%>
  
 <%@ page import="org.grails.activiti.ActivitiUtils" %>
-<%@ page import="org.grails.activiti.ActivitiController" %>
 
 <html>
     <head>
@@ -161,7 +160,7 @@
                 <h2>Other Controllers:</h2>
                 <ul>
                     <g:each var="c" in="${grailsApplication.controllerClasses.sort { it.fullName } }">
-                    		<g:if test="${!(c.clazz.superclass == ActivitiController)}">
+                    		<g:if test="${!c.clazz.activiti}">
                        	 	<li class="controller"><g:link controller="${c.logicalPropertyName}">${c.fullName}</g:link></li>
                        	</g:if>
                     </g:each>

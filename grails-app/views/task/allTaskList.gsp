@@ -27,6 +27,11 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="main" />
         <title><g:message code="allTasks.title" default="All Tasks"/></title>
+        <script type="text/javascript">
+        		function confirmDelete() {
+        				return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');           		
+        				}
+        </script>
     </head>
     <body>
         <div class="nav">
@@ -90,9 +95,9 @@
                             </td>
                     
                            <td>
-                             		<g:form action="deleteTask" >
+                             		<g:form action="deleteTask" onsubmit="return confirmDelete();">
                              				<g:hiddenField name="taskId" value="${taskInstance.id}" />
-                             				<span class="button"><g:submitButton style="font-weight:bold" name="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" /></span>                           			
+                             				<span class="button"><g:submitButton style="font-weight:bold" name="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}"/></span>                           			
                              		</g:form>                  		
                             </td>
                         

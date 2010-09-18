@@ -41,17 +41,10 @@ ant.copy file:"${pluginBasedir}/web-app/images/grails_activiti_logo.png", todir:
 ant.copy file:"${pluginBasedir}/web-app/images/grails_activiti_favicon.ico", todir:"${basedir}/web-app/images"
 
 updateConfig()
-ant.echo '''
-************************************************************
-* Your grails-app/conf/Config.groovy has been updated with *
-* default configurations of Activiti;                      *
-* please verify that the values are correct.               *
-************************************************************
-'''
 
 private void updateConfig() {
 	def configFile = new File(basedir, 'grails-app/conf/Config.groovy')
-	if (configFile.exists()) {
+	if (configFile.exists() && configFile.text.indexOf("activiti") == -1) {
 		configFile.withWriterAppend {
 			it.writeLine '\n// Added by the Grails Activiti plugin:'
 			it.writeLine '''activiti {
@@ -81,6 +74,14 @@ environments {
         }
     }
 }	
+'''
+
+ant.echo '''
+************************************************************
+* Your grails-app/conf/Config.groovy has been updated with *
+* default configurations of Activiti;                      *
+* please verify that the values are correct.               *
+************************************************************
 '''
 		}
 	}
