@@ -140,8 +140,7 @@ class ActivitiGrailsPlugin {
 					 activitiService.claimTask(taskId, null)
 				}					
 				
-				controllerClass.metaClass.deleteTask = { String taskId ->
-					 String domainClassName = null		
+				controllerClass.metaClass.deleteTask = { String taskId, String domainClassName = null ->	
 					 if (delegate.class != org.grails.activiti.TaskController) {
 						  	domainClassName = getDomainClassName(delegate)
 					  }

@@ -14,7 +14,7 @@
  */
 package org.grails.activiti
 
- /**
+/**
  *
  * @author <a href='mailto:limcheekin@vobject.com'>Lim Chee Kin</a>
  *
@@ -25,3 +25,4 @@ enum ApprovalStatus {
 	APPROVED,
 	REJECTED
 }
+

@@ -14,7 +14,7 @@
  */
 package org.grails.activiti
 
- /**
+/**
  *
  * @author <a href='mailto:limcheekin@vobject.com'>Lim Chee Kin</a>
  *
@@ -23,37 +23,37 @@ package org.grails.activiti
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 class ActivitiUtils {
-	  static def context = ApplicationHolder.getApplication().getMainContext()
-	  	
-		static getActivitiService() {
-			context.getBean("activitiService")
-		}
-				  
-		static getIdentityService() {
-			context.getBean("identityService")
-		}
-		
-		static getProcessEngine() {
-			context.getBean("processEngine")
-		}
-		
-		static getRuntimeService() {
-			context.getBean("runtimeService")
-		}
-		
-		static getRepositoryService() {
-			context.getBean("repositoryService")
-		}														
+	static def context = ApplicationHolder.getApplication().getMainContext()
 	
-		static getTaskService() {
-			context.getBean("taskService")
-		}			
-		
-		static getManagementService() {
-			context.getBean("managementService")
-		}	
-		
-		static getHistoryService() {
-			context.getBean("historyService")
-		}							
+	static getActivitiService() {
+		context.getBean("activitiService")
+	}
+	
+	static getIdentityService() {
+		context.getBean("identityService")
+	}
+	
+	static getProcessEngine() {
+		context.getBean("processEngine")
+	}
+	
+	static getRuntimeService() {
+		context.getBean("runtimeService")
+	}
+	
+	static getRepositoryService() {
+		context.getBean("repositoryService")
+	}														
+	
+	static getTaskService() {
+		context.getBean("taskService")
+	}			
+	
+	static getManagementService() {
+		context.getBean("managementService")
+	}	
+	
+	static getHistoryService() {
+		context.getBean("historyService")
+	}
 }
