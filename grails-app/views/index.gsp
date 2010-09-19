@@ -108,7 +108,7 @@
             <h1>Welcome to Grails Activiti Plugin</h1>
             <p>Congratulations, you have successfully started your first Grails Activiti application! 
             Some files are overwritten during the installation of Grails Activiti Plugin (including the one you are reading now), 
-            you need not to worry as the original version of overwritten files are backup as same file name and .bak file extension 
+            you need not to worry as the original version of overwritten files are backup as same file name with .bak file extension 
             in the same directory, you can restore to original version of the overwritten file as necessary.
             This is the default page, feel free to modify it to either redirect to a controller or display whatever
             content you may choose. Below is a list of activiti users from user and management group, you need to select an user as identity 
