@@ -107,19 +107,19 @@ class ActivitiGrailsPlugin {
 								ProcessInstance pi = startProcess(params)
 								Task task = getUnassignedTask(session.username, pi.id)
 								claimTask(task.id, session.username)
-								redirect uri:getTaskForm(task.id)		
+								redirect uri:getTaskFormUri(task.id)		
 						}
 				}
 				
 				controllerClass.metaClass.startTask = { String taskId ->
 						activitiService.with {					
 							claimTask(taskId, session.username)
-							redirect uri:getTaskForm(taskId)		
+							redirect uri:getTaskFormUri(taskId)		
 						}
 				}
 							
 				controllerClass.metaClass.getForm = { String taskId ->
-						redirect uri:activitiService.getTaskForm(taskId)
+						redirect uri:activitiService.getTaskFormUri(taskId)
 				}
 				
 				controllerClass.metaClass.saveTask = { Map params ->

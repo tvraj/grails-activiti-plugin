@@ -159,10 +159,12 @@ class ActivitiService {
 	def setTaskFormUri(Map params) {
 		String executionId = taskService.findTask(params.taskId).executionId
 		setIdAndDomainClassName(executionId, params)
-		runtimeService.setVariable(executionId, "uri", "/${params.controller}/${params.action}/${params.id}")
+		if (params.controller && params.action && params.id) {
+			runtimeService.setVariable(executionId, "uri", "/${params.controller}/${params.action}/${params.id}")
+		}
 	}						
 	
-	String getTaskForm(String taskId) {
+	String getTaskFormUri(String taskId) {
 		Task task = taskService.findTask(taskId)
 		String taskFormUri = runtimeService.getVariable(task.executionId, "uri")
 		if (!taskFormUri) {
@@ -172,7 +174,7 @@ class ActivitiService {
 		if (taskFormUri) {
 			taskFormUri += "?taskId=${taskId}"
 		}
-		taskFormUri
+		return taskFormUri
 	}
 	
 	def setAssignee(String taskId, String username) {
