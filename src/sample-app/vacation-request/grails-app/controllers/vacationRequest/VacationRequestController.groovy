@@ -103,10 +103,10 @@ class VacationRequestController {
             if (!vacationRequestInstance.hasErrors() && vacationRequestInstance.save(flush: true)) {
                 flash.message = "${message(code: 'default.updated.message', args: [message(code: 'vacationRequest.label', default: 'VacationRequest'), vacationRequestInstance.id])}"
                 if (params.complete) {
-		                completeTask([taskId: params.taskId,
-		                              id: vacationRequestInstance.id,
-		                              vacationApproved: vacationRequestInstance.approvalStatus == ApprovalStatus.APPROVED, 
-		                              emailTo:vacationRequestInstance.employeeName])
+										params.id = vacationRequestInstance.id
+										params.vacationApproved = vacationRequestInstance.approvalStatus == ApprovalStatus.APPROVED
+										params.emailTo = vacationRequestInstance.employeeName
+		                completeTask(params)
 								} else {
 										params.action="approval"
 										saveTask(params)
