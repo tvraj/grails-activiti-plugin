@@ -19,6 +19,7 @@ import grails.util.GrailsNameUtils
 import org.activiti.GrailsDbProcessEngineBuilder
 import grails.util.Environment
 import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
+import org.codehaus.groovy.grails.commons.ControllerArtefactHandler
 
  /**
  *
@@ -52,8 +53,9 @@ class ActivitiGrailsPlugin {
     // URL to the plugin's documentation
     def documentation = "http://grails.org/plugin/activiti"
 	
-    def watchedResources = "file:./grails-app/controllers/*Controller.groovy"
- 	
+    // def watchedResources = "file:../grails-app/controllers/*Controller.groovy"
+  	
+	  def observe = ["controllers"]
 
     def doWithWebDescriptor = { xml ->
         // TODO Implement additions to web.xml (optional), this event occurs before 
@@ -82,21 +84,20 @@ class ActivitiGrailsPlugin {
     	identityService(processEngine:"getIdentityService")
     	historyService(processEngine:"getHistoryService")
 		
-			activitiService(org.grails.activiti.ActivitiService) {
-				runtimeService = ref("runtimeService")
-				taskService = ref("taskService")
-			}		
+      activitiService(org.grails.activiti.ActivitiService) {
+        runtimeService = ref("runtimeService")
+        taskService = ref("taskService")
+      }		
     }
 
     def doWithDynamicMethods = { ctx ->
-    	assert ctx.activitiService
 			application.controllerClasses.each { controllerClass ->
-				 if (controllerClass.clazz.activiti) { 
+				 if (controllerClass.hasProperty("activiti") && controllerClass.clazz.activiti) { 
 					 controllerClass.metaClass.getActivitiService = {-> return ctx.activitiService}
 					 // addActivitiActions(controllerClass) Not possible, find out more at URL below:
 					 // http://archive.jrcs.codehaus.org/lists/org.codehaus.grails.dev/msg/25487189.post@talk.nabble.com
 					 addActivitiMethods(controllerClass)
-				 }
+				 } 
 			} 				
     }
 
@@ -208,10 +209,13 @@ class ActivitiGrailsPlugin {
     }
 
     def onChange = { event ->
-        // TODO Implement code that is executed when any artefact that this plugin is
-        // watching is modified and reloaded. The event contains: event.source,
-        // event.application, event.manager, event.ctx, and event.plugin.
-				println "event.source = $event.source"
+        if(application.isControllerClass(event.source)) {
+            def controllerClass = application.addArtefact(ControllerArtefactHandler.TYPE, event.source)			
+            if (controllerClass.hasProperty("activiti") && controllerClass.clazz.activiti) {
+			      controllerClass.metaClass.getActivitiService = {-> return event.ctx.activitiService}
+            addActivitiMethods(controllerClass)
+            }		
+        } 		
     }
 
     def onConfigChange = { event ->

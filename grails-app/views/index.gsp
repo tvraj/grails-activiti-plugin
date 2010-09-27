@@ -145,7 +145,7 @@
                 <h2>Activiti Controllers:</h2>
                 <ul>
                     <g:each var="c" in="${grailsApplication.controllerClasses.sort { it.fullName } }">
-                    		<g:if test="${c.clazz.activiti}">
+                    		<g:if test="${c.hasProperty('activiti') && c.clazz.activiti}">
                        	 <li class="controller"><g:link controller="${c.logicalPropertyName}">${c.fullName}</g:link> 
                        	 	<g:if test="${!c.logicalPropertyName.equals('task')}">
                        	 		[<g:link controller="${c.logicalPropertyName}" action="start">Start</g:link>]
@@ -160,7 +160,7 @@
                 <h2>Other Controllers:</h2>
                 <ul>
                     <g:each var="c" in="${grailsApplication.controllerClasses.sort { it.fullName } }">
-                    		<g:if test="${!c.clazz.activiti}">
+                    		<g:if test="${!c.hasProperty('activiti')}">
                        	 	<li class="controller"><g:link controller="${c.logicalPropertyName}">${c.fullName}</g:link></li>
                        	</g:if>
                     </g:each>
