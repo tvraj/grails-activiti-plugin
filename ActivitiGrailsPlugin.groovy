@@ -20,6 +20,7 @@ import org.activiti.GrailsDbProcessEngineBuilder
 import grails.util.Environment
 import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
 import org.codehaus.groovy.grails.commons.ControllerArtefactHandler
+import org.springframework.core.io.Resource
 
  /**
  *
@@ -53,7 +54,7 @@ class ActivitiGrailsPlugin {
     // URL to the plugin's documentation
     def documentation = "http://grails.org/plugin/activiti"
 	
-    // def watchedResources = "file:../grails-app/controllers/*Controller.groovy"
+    def watchedResources = "file:./grails-app/conf/**/*.bpmn*.xml"
   	
 	  def observe = ["controllers"]
 
@@ -62,21 +63,18 @@ class ActivitiGrailsPlugin {
     }
 
     def doWithSpring = {
-    	println "Activiti Process Engine Initialization..."
-    	def configurationProperties = [
-			"process.engine.name":CH.config.activiti.processEngineName?:"grails-activiti-noconfig",
-			"database":CH.config.activiti.databaseName?:"h2-in-memory",
-			"jdbc.driver":CH.config.dataSource.driverClassName,
-			"jdbc.url":CH.config.dataSource.url,
-			"jdbc.username":CH.config.dataSource.username,
-			"jdbc.password":CH.config.dataSource.password,
-			"db.schema.strategy":CH.config.activiti.dbSchemaStrategy?:"create-drop",
-			"job.executor.auto.activate":CH.config.activiti.jobExecutorAutoActivation?:false
-    	] as Properties
-    	processEngineBuilder(GrailsDbProcessEngineBuilder, configurationProperties) { bean ->
-			bean.factoryMethod = "getInstance"
-    	}
-    	processEngine(processEngineBuilder:"buildProcessEngine")
+    	println "Activiti Process Engine Initialization..."	
+    	processEngine(org.activiti.engine.impl.cfg.spring.ProcessEngineFactoryBean) {
+        processEngineName = CH.config.activiti.processEngineName?:"grails-activiti-noconfig"
+        dataBaseName = CH.config.activiti.databaseName?:"h2-noconfig"
+        dbSchemaStrategy = CH.config.activiti.dbSchemaStrategy?
+                           CH.config.activiti.dbSchemaStrategy.toUpperCase().replace("-", "_"):
+						               "create-drop".toUpperCase().replace("-", "_")
+        jobExecutorAutoActivate = CH.config.activiti.jobExecutorAutoActivation?:false
+        deploymentResources = "file:./grails-app/conf/**/*.bpmn*.xml"
+        dataSource = ref("dataSource")
+        transactionManager = ref("transactionManager") 
+		}
     	runtimeService(processEngine:"getRuntimeService") 
 			repositoryService(processEngine:"getRepositoryService") 
     	taskService(processEngine:"getTaskService") 
@@ -209,12 +207,17 @@ class ActivitiGrailsPlugin {
     }
 
     def onChange = { event ->
-        if(application.isControllerClass(event.source)) {
-            def controllerClass = application.addArtefact(ControllerArtefactHandler.TYPE, event.source)			
-            if (controllerClass.hasProperty("activiti") && controllerClass.clazz.activiti) {
-			      controllerClass.metaClass.getActivitiService = {-> return event.ctx.activitiService}
-            addActivitiMethods(controllerClass)
-            }		
+		println "event.source = $event.source"
+        if (!(event.source instanceof Resource)) {  		  
+            if(application.isControllerClass(event.source)) {
+                def controllerClass = application.addArtefact(ControllerArtefactHandler.TYPE, event.source)			
+                if (controllerClass.hasProperty("activiti") && controllerClass.clazz.activiti) {
+			          controllerClass.metaClass.getActivitiService = {-> return event.ctx.activitiService}
+                addActivitiMethods(controllerClass)
+                }
+            } else { // it is org.springframework.core.io.Resource
+			
+			}				
         } 		
     }
 
