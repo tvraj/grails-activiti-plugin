@@ -16,7 +16,6 @@
 import org.activiti.engine.runtime.ProcessInstance
 import org.activiti.engine.task.Task
 import grails.util.GrailsNameUtils
-import org.activiti.GrailsDbProcessEngineBuilder
 import grails.util.Environment
 import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
 import org.codehaus.groovy.grails.commons.ControllerArtefactHandler
