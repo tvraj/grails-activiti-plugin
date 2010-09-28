@@ -23,9 +23,10 @@
  *
  * @since 5.0.alpha3
  */
+import grails.util.BuildSettingsHolder as build
 
 includeTargets << grailsScript("_GrailsInit")
-includeTargets << grailsScript("_GrailsCreateArtifacts")
+includeTargets << new File("${activitiPluginDir}/scripts/_GrailsCreateArtifacts.groovy")
 
 target ('default': "Creates a new activiti test.") {
 	depends(checkVersion, parseArguments)
@@ -45,5 +46,5 @@ target ('default': "Creates a new activiti test.") {
 }                            
 
 createActivitiTest = { Map args = [:] ->
-	createArtifact(name: args["name"], suffix: "${args['suffix']}", type: "ActivitiTests", path: "test/${args['testType']}")
+	createArtifact(name: args["name"], suffix: "${args['suffix']}", type: "ActivitiTests", path: "test/${args['testType']}", templatesDirName: build.settings.config.grails.templates.dir.name)
 }

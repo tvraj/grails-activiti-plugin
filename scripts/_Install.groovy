@@ -40,7 +40,18 @@ ant.copy file:"${pluginBasedir}/grails-app/views/layouts/main.gsp", todir:"${bas
 ant.copy file:"${pluginBasedir}/web-app/images/grails_activiti_logo.png", todir:"${basedir}/web-app/images"
 ant.copy file:"${pluginBasedir}/web-app/images/grails_activiti_favicon.ico", todir:"${basedir}/web-app/images"
 
+updateBuildConfig()
 updateConfig()
+
+private void updateBuildConfig() {
+	def configFile = new File(basedir, 'grails-app/conf/BuildConfig.groovy')
+	if (configFile.exists() && configFile.text.indexOf("grails.templates.dir.name") == -1) {
+		configFile.withWriterAppend {
+			it.writeLine '\n// Added by the Grails Activiti plugin:'
+			it.writeLine 'grails.templates.dir.name="activiti-templates"'
+		}
+	}	
+}
 
 private void updateConfig() {
 	def configFile = new File(basedir, 'grails-app/conf/Config.groovy')
