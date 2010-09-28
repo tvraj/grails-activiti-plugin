@@ -21,7 +21,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
 import org.codehaus.groovy.grails.commons.ControllerArtefactHandler
 import org.springframework.core.io.Resource
 
- /**
+/**
  *
  * @author <a href='mailto:limcheekin@vobject.com'>Lim Chee Kin</a>
  *
@@ -55,7 +55,7 @@ class ActivitiGrailsPlugin {
 	
     def watchedResources = "file:./grails-app/conf/**/*.bpmn*.xml"
   	
-	  def observe = ["controllers"]
+    def observe = ["controllers"]
 
     def doWithWebDescriptor = { xml ->
         // TODO Implement additions to web.xml (optional), this event occurs before 
@@ -64,159 +64,159 @@ class ActivitiGrailsPlugin {
     def doWithSpring = {
     	println "Activiti Process Engine Initialization..."	
     	processEngine(org.activiti.engine.impl.cfg.spring.ProcessEngineFactoryBean) {
-        processEngineName = CH.config.activiti.processEngineName?:"grails-activiti-noconfig"
-        dataBaseName = CH.config.activiti.databaseName?:"h2-noconfig"
-        dbSchemaStrategy = CH.config.activiti.dbSchemaStrategy?
-                           CH.config.activiti.dbSchemaStrategy.toUpperCase().replace("-", "_"):
-						               "create-drop".toUpperCase().replace("-", "_")
-        jobExecutorAutoActivate = CH.config.activiti.jobExecutorAutoActivation?:false
-        deploymentResources = "file:./grails-app/conf/**/*.bpmn*.xml"
-        dataSource = ref("dataSource")
-        transactionManager = ref("transactionManager") 
-		}
+            processEngineName = CH.config.activiti.processEngineName?:"grails-activiti-noconfig"
+            dataBaseName = CH.config.activiti.databaseName?:"h2-noconfig"
+            dbSchemaStrategy = CH.config.activiti.dbSchemaStrategy?
+                               CH.config.activiti.dbSchemaStrategy.toUpperCase().replace("-", "_"):
+			       "create-drop".toUpperCase().replace("-", "_")
+            jobExecutorAutoActivate = CH.config.activiti.jobExecutorAutoActivation?:false
+            deploymentResources = "file:./grails-app/conf/**/*.bpmn*.xml"
+            dataSource = ref("dataSource")
+            transactionManager = ref("transactionManager")
+        }
     	runtimeService(processEngine:"getRuntimeService") 
-			repositoryService(processEngine:"getRepositoryService") 
+        repositoryService(processEngine:"getRepositoryService")
     	taskService(processEngine:"getTaskService") 
     	managementService(processEngine:"getManagementService") 
     	identityService(processEngine:"getIdentityService")
     	historyService(processEngine:"getHistoryService")
 		
-      activitiService(org.grails.activiti.ActivitiService) {
-        runtimeService = ref("runtimeService")
-        taskService = ref("taskService")
-      }		
+        activitiService(org.grails.activiti.ActivitiService) {
+            runtimeService = ref("runtimeService")
+            taskService = ref("taskService")
+        }
     }
 
     def doWithDynamicMethods = { ctx ->
-			application.controllerClasses.each { controllerClass ->
-				 if (controllerClass.hasProperty("activiti") && controllerClass.clazz.activiti) { 
-					 controllerClass.metaClass.getActivitiService = {-> return ctx.activitiService}
-					 // addActivitiActions(controllerClass) Not possible, find out more at URL below:
-					 // http://archive.jrcs.codehaus.org/lists/org.codehaus.grails.dev/msg/25487189.post@talk.nabble.com
-					 addActivitiMethods(controllerClass)
-				 } 
-			} 				
+        application.controllerClasses.each { controllerClass ->
+            if (controllerClass.hasProperty("activiti") && controllerClass.clazz.activiti) {
+                controllerClass.metaClass.getActivitiService = {-> return ctx.activitiService}
+                // addActivitiActions(controllerClass) Not possible, find out more at URL below:
+                // http://archive.jrcs.codehaus.org/lists/org.codehaus.grails.dev/msg/25487189.post@talk.nabble.com
+                addActivitiMethods(controllerClass)
+            }
+        }
     }
 
-		def addActivitiMethods(controllerClass) {
-				controllerClass.metaClass.start = { Map params ->
-						activitiService.with {					
-								params.username = session.username
-								ProcessInstance pi = startProcess(params)
-								Task task = getUnassignedTask(session.username, pi.id)
-								claimTask(task.id, session.username)
-								redirect uri:getTaskFormUri(task.id)		
-						}
-				}
+    def addActivitiMethods(controllerClass) {
+        controllerClass.metaClass.start = { Map params ->
+            activitiService.with {
+                params.username = session.username
+                ProcessInstance pi = startProcess(params)
+                Task task = getUnassignedTask(session.username, pi.id)
+                claimTask(task.id, session.username)
+                redirect uri:getTaskFormUri(task.id)
+            }
+        }
 				
-				controllerClass.metaClass.startTask = { String taskId ->
-						activitiService.with {					
-							claimTask(taskId, session.username)
-							redirect uri:getTaskFormUri(taskId)		
-						}
-				}
+        controllerClass.metaClass.startTask = { String taskId ->
+            activitiService.with {
+                claimTask(taskId, session.username)
+                redirect uri:getTaskFormUri(taskId)
+            }
+        }
 							
-				controllerClass.metaClass.getForm = { String taskId ->
-						redirect uri:activitiService.getTaskFormUri(taskId)
-				}
+        controllerClass.metaClass.getForm = { String taskId ->
+            redirect uri:activitiService.getTaskFormUri(taskId)
+        }
 				
-				controllerClass.metaClass.saveTask = { Map params ->
-					 params.domainClassName = getDomainClassName(delegate)
-					 activitiService.setTaskFormUri(params)
-				}				
+        controllerClass.metaClass.saveTask = { Map params ->
+            params.domainClassName = getDomainClassName(delegate)
+            activitiService.setTaskFormUri(params)
+        }
 				
-				controllerClass.metaClass.completeTask = { Map params ->
-					 params.domainClassName = getDomainClassName(delegate)
-					 activitiService.completeTask(params.taskId, params)
-				}						
+        controllerClass.metaClass.completeTask = { Map params ->
+            params.domainClassName = getDomainClassName(delegate)
+            activitiService.completeTask(params.taskId, params)
+        }
 						
-				controllerClass.metaClass.claimTask = { String taskId ->
-					 activitiService.claimTask(taskId, session.username)
-				}			
+        controllerClass.metaClass.claimTask = { String taskId ->
+            activitiService.claimTask(taskId, session.username)
+        }
 				
-				controllerClass.metaClass.revokeTask = { String taskId ->
-					 activitiService.claimTask(taskId, null)
-				}					
+        controllerClass.metaClass.revokeTask = { String taskId ->
+            activitiService.claimTask(taskId, null)
+        }
 				
-				controllerClass.metaClass.deleteTask = { String taskId, String domainClassName = null ->	
-					 if (delegate.class != org.grails.activiti.TaskController) {
-						  	domainClassName = getDomainClassName(delegate)
-					  }
-					 activitiService.deleteTask(taskId, domainClassName)
-				}		
+        controllerClass.metaClass.deleteTask = { String taskId, String domainClassName = null ->
+            if (delegate.class != org.grails.activiti.TaskController) {
+                domainClassName = getDomainClassName(delegate)
+            }
+            activitiService.deleteTask(taskId, domainClassName)
+        }
 		
-				controllerClass.metaClass.setAssignee = { String taskId, String username ->		
-					 if (username) {
-						 activitiService.setAssignee(taskId, username)
-					 } else {
-						 revokeTask(taskId)
-					 }
-				}						
+        controllerClass.metaClass.setAssignee = { String taskId, String username ->
+            if (username) {
+                activitiService.setAssignee(taskId, username)
+            } else {
+                revokeTask(taskId)
+            }
+        }
 				
-				controllerClass.metaClass.setPriority = { String taskId, int priority ->		
-					 activitiService.setPriority(taskId, priority)
-				}					
+        controllerClass.metaClass.setPriority = { String taskId, int priority ->
+            activitiService.setPriority(taskId, priority)
+        }
 						
 		
-				controllerClass.metaClass.getUnassignedTasksCount = {->
-						activitiService.getUnassignedTasksCount(session.username)
-				}
+        controllerClass.metaClass.getUnassignedTasksCount = {->
+            activitiService.getUnassignedTasksCount(session.username)
+        }
 				
-				controllerClass.metaClass.getAssignedTasksCount = {->
-						activitiService.getAssignedTasksCount(session.username)
-				}		
+        controllerClass.metaClass.getAssignedTasksCount = {->
+            activitiService.getAssignedTasksCount(session.username)
+        }
 				
-				controllerClass.metaClass.getAllTasksCount = {->
-						activitiService.getAllTasksCount()
-				}
+        controllerClass.metaClass.getAllTasksCount = {->
+            activitiService.getAllTasksCount()
+        }
 				
-				controllerClass.metaClass.findUnassignedTasks = { Map params ->
-						params.username=session.username
-				    if (!params.sort) {
-							params.sort = "id"
-							params.order = "desc"
-				    	}			
-						activitiService.findUnassignedTasks(params)
-				}
+        controllerClass.metaClass.findUnassignedTasks = { Map params ->
+            params.username=session.username
+            if (!params.sort) {
+                params.sort = "id"
+                params.order = "desc"
+            }
+            activitiService.findUnassignedTasks(params)
+        }
 				
-				controllerClass.metaClass.findAssignedTasks = { Map params ->
-						params.username=session.username
-				    if (!params.sort) {
-							params.sort = "id"
-							params.order = "desc"
-				    	}			
-						activitiService.findAssignedTasks(params)
-				}
+        controllerClass.metaClass.findAssignedTasks = { Map params ->
+            params.username=session.username
+            if (!params.sort) {
+                params.sort = "id"
+                params.order = "desc"
+            }
+            activitiService.findAssignedTasks(params)
+        }
 				
-				controllerClass.metaClass.findAllTasks = { Map params ->
-				    if (!params.sort) {
-							params.sort = "id"
-							params.order = "desc"
-				    	}			
-						activitiService.findAllTasks(params)
-				}				
-		}  
+        controllerClass.metaClass.findAllTasks = { Map params ->
+            if (!params.sort) {
+                params.sort = "id"
+                params.order = "desc"
+            }
+            activitiService.findAllTasks(params)
+        }
+    }
 
-		private getDomainClassName(delegate) {
-			 return "${delegate.class.package.name}.${GrailsNameUtils.getLogicalName(delegate.class.name, 'Controller')}"
-		}
+    private getDomainClassName(delegate) {
+        return "${delegate.class.package.name}.${GrailsNameUtils.getLogicalName(delegate.class.name, 'Controller')}"
+    }
 		
     def doWithApplicationContext = { applicationContext ->
         // TODO Implement post initialization spring config (optional)
     }
 
     def onChange = { event ->
-		println "event.source = $event.source"
+        println "event.source = $event.source"
         if (!(event.source instanceof Resource)) {  		  
             if(application.isControllerClass(event.source)) {
                 def controllerClass = application.addArtefact(ControllerArtefactHandler.TYPE, event.source)			
                 if (controllerClass.hasProperty("activiti") && controllerClass.clazz.activiti) {
-			          controllerClass.metaClass.getActivitiService = {-> return event.ctx.activitiService}
-                addActivitiMethods(controllerClass)
+                    controllerClass.metaClass.getActivitiService = {-> return event.ctx.activitiService}
+                    addActivitiMethods(controllerClass)
                 }
             } else { // it is org.springframework.core.io.Resource
 			
-			}				
+            }
         } 		
     }
 
