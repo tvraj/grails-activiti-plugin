@@ -28,7 +28,7 @@ includeTargets << grailsScript("Init")
 
 target (main: "Installs the artifact and scaffolding templates") {
     depends(checkVersion, parseArguments)
-    templatesDirName = build.settings.config.grails.templates.dir.name?:'templates'
+    templatesDirName = build.settings.config.grails.templates.dir.name?:'activiti-templates'
     targetDir = "${basedir}/src/${templatesDirName}"
     overwrite = false
 
@@ -43,7 +43,7 @@ target (main: "Installs the artifact and scaffolding templates") {
     }
 	
     ant.copy (todir:targetDir, overwrite:overwrite) {
-			fileset dir:"${activitiPluginDir}/src/${templatesDirName}"
+			fileset dir:"${activitiPluginDir}/src/activiti-templates"
 		}
 	
     event("StatusUpdate", [ "Templates installed successfully"])

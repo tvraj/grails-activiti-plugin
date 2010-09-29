@@ -32,7 +32,9 @@ createArtifact = { Map args = [:] ->
     def suffix = args["suffix"]
     def type = args["type"]
     def artifactPath = args["path"]
-    def templatesDirName = args["templatesDirName"]?:"templates"
+	  String activitiTemplatesDirName = "activiti-templates"
+	  def templatesDirName = args["templatesDirName"]?:activitiTemplatesDirName
+	  
     ant.mkdir(dir: "${basedir}/${artifactPath}")
 
     // Extract the package name if one is given.
@@ -75,13 +77,13 @@ createArtifact = { Map args = [:] ->
     templateFile = new FileSystemResource("${basedir}/src/${templatesDirName}/artifacts/${type}.groovy")
     if (!templateFile.exists()) {
         // now check for template provided by plugins
-        def pluginTemplateFiles = resolveResources("file:${pluginsHome}/*/src/${templatesDirName}/artifacts/${type}.groovy")
+        def pluginTemplateFiles = resolveResources("file:${pluginsHome}/*/src/${activitiTemplatesDirName}/artifacts/${type}.groovy")
         if (pluginTemplateFiles) {
             templateFile = pluginTemplateFiles[0]
         }
         else {
             // template not found in application, use default template
-            templateFile = grailsResource("src/grails/${templatesDirName}/artifacts/${type}.groovy")
+            templateFile = grailsResource("src/grails/templates/artifacts/${type}.groovy")
         }
     }
 

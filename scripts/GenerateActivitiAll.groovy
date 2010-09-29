@@ -24,7 +24,7 @@
  */
  
 includeTargets << grailsScript("_GrailsCreateArtifacts")
-includeTargets << new File("${activitiPluginDir}/scripts/_GrailsGenerate.groovy")
+includeTargets << new File("${activitiPluginDir}/scripts/_GrailsActivitiGenerate.groovy")
 
 generateViews = true
 generateController = true
@@ -44,7 +44,7 @@ target ('default': "Generates a CRUD interface (controller + views) for a domain
         }
     }
     catch (Exception e) {
-        logError("Error running generate-all", e)
+        logError("Error running generate-activiti-all", e)
         exit(1)
     }
 }

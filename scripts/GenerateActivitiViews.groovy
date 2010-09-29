@@ -24,7 +24,7 @@
  */
 
 includeTargets << grailsScript("_GrailsCreateArtifacts")
-includeTargets << new File("${activitiPluginDir}/scripts/_GrailsGenerate.groovy")
+includeTargets << new File("${activitiPluginDir}/scripts/_GrailsActivitiGenerate.groovy")
 
 target ('default': "Generates the CRUD views for a specified domain class") {
     depends(checkVersion, parseArguments, packageApp)

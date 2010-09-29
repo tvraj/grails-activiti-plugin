@@ -26,7 +26,7 @@
 import grails.util.BuildSettingsHolder as build
 
 includeTargets << grailsScript("_GrailsInit")
-includeTargets << new File("${activitiPluginDir}/scripts/_GrailsCreateArtifacts.groovy")
+includeTargets << new File("${activitiPluginDir}/scripts/_GrailsActivitiCreateArtifacts.groovy")
 
 target ('default': "Creates a new activiti test.") {
 	depends(checkVersion, parseArguments)
