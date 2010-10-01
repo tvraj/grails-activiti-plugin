@@ -28,7 +28,7 @@ ant.mkdir(dir:"${basedir}/src/taskforms")
 * Due to javax.el package conflict with tomcat-core.jar of tomcat plugin.
 * ant.move and ant.delete not working in windows environment
 */
-ant.copy file:"${pluginBasedir}/lib/juel-2.2.1.jar", todir:"${basedir}/lib", overwrite:true
+// ant.copy file:"${pluginBasedir}/lib/juel-2.2.1.jar", todir:"${basedir}/lib", overwrite:true
 
 // Backup existing files
 ant.move file:"${basedir}/grails-app/views/index.gsp", tofile:"${basedir}/grails-app/views/index.bak"
@@ -48,16 +48,23 @@ private void updateConfig() {
 		configFile.withWriterAppend {
 			it.writeLine '\n// Added by the Grails Activiti plugin:'
 			it.writeLine '''activiti {
-				processEngineName = "activiti-engine-default"
-			  databaseName = "h2" 
-			  jobExecutorAutoActivation = false
+    processEngineName = "activiti-engine-default"
+	  dataBaseName = "h2" 
+	  deploymentName = appName
+	  deploymentResources = ["file:grails-app/conf/**/*.bpmn*.xml", "file:src/taskforms/**/*.form"]
+	  jobExecutorAutoActivate = false
+	  mailServerHost = "smtp.yourserver.com"
+	  mailServerPort = "25"
+	  mailServerUserName = ""
+	  mailServerPassword = ""
+	  mailServerDefaultFromAddress = "username@yourserver.com"
 }
 
 environments {
     development {
         activiti {
 			  processEngineName = "activiti-engine-dev"
-			  dbSchemaStrategy = "create-drop" // one of "create", "create-drop", "check-version", "drop-create"			  
+			  dbSchemaStrategy = "create-drop" // "create-drop" or "check-version"	  
         }
     }
     test {
@@ -70,7 +77,7 @@ environments {
         activiti {
 			  processEngineName = "activiti-engine-prod"
 			  dbSchemaStrategy = "check-version"
-			  jobExecutorAutoActivation = true
+			  jobExecutorAutoActivate = true
         }
     }
 }	

@@ -22,8 +22,12 @@
  * @since 5.0.alpha3
  * 
  */
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver
+import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
+
 includeTargets << grailsScript("Init")
 includeTargets << grailsScript("Compile")
+includeTargets << grailsScript("_GrailsPackage")
 
 ant.property(environment:"env")
 ant.property (file : "application.properties")
@@ -31,7 +35,7 @@ appName = ant.project.properties.'app.name'
 appVersion = ant.project.properties.'app.version'
 
 target(deploy: "Deploy Activiti Business Archive (BAR) and JAR") {
-	depends(createJar, createBar)
+	depends(createBar)
 	event("DeployBarStart", [])
 	rootLoader.addURL(new File("${activitiPluginDir}/grails-app/conf").toURL())
 	ant.taskdef (name: 'deployBar', classname : "org.activiti.engine.impl.ant.DeployBarTask")
@@ -45,16 +49,21 @@ target(deploy: "Deploy Activiti Business Archive (BAR) and JAR") {
 }
 
 target(createBar: "Create Activiti Business Archive (BAR) that contains process files and process resources") {
+	createConfig()
+	ant.delete dir:"${basedir}/target/bar"
+	ant.mkdir dir:"${basedir}/target/bar"
+	deploymentResources = config.activiti.deploymentResources
+	println "deploymentResources = $config.activiti.deploymentResources"
+	deploymentResources = deploymentResources?[deploymentResources].flatten():["file:grails-app/conf/**/*.bpmn*.xml", "file:src/taskforms/**/*.form"]
+	resolver = new PathMatchingResourcePatternResolver()
+	deploymentResources.each { resource ->
+	    resources = resolver.getResources(resource)  
+		  resources.each { 
+			   ant.copy file:it.file.absolutePath, todir:"${basedir}/target/bar"
+		  }      
+	}
 	ant.jar (destfile: "${basedir}/target/${appName}-${appVersion}.bar") {
-		fileset(dir:"${basedir}/grails-app/conf") {
-			include(name: "**/*.bpmn*.xml")
-		}		
-
-		if (new File("${basedir}/src/taskforms").exists()) {  
-			fileset(dir:"${basedir}/src/taskforms") {
-				include(name: "**/*.form")
-			}			
-		}	
+		fileset dir:"${basedir}/target/bar"
 	}	
 }
 

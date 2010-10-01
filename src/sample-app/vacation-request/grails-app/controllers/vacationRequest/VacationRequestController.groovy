@@ -61,7 +61,7 @@ class VacationRequestController {
 							params.action="show"
 							saveTask(params)
 						}
-			      redirect(action: "show", id: vacationRequestInstance.id, params: params)
+			      redirect(action: "show", params: params)
         }
         else {
             render(view: "create", model: [vacationRequestInstance: vacationRequestInstance, 

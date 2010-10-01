@@ -112,7 +112,7 @@
             in the same directory, you can restore to original version of the overwritten file as necessary.
             This is the default page, feel free to modify it to either redirect to a controller or display whatever
             content you may choose. Below is a list of activiti users from user and management group, you need to select an user as identity 
-            from the combo box before you can start using Grails Activiti related functionality. Next, you will Activiti Controllers section, 
+            from the combo box before you can start using Grails Activiti related functionality. Next, you will see the Activiti Controllers section, 
             you can click on TaskController to start browsing the task list of the user or you can click on "Start" of other Activiti 
             controllers to start process and working on task form. Further below is list of other controllers, click on each to execute its default action:</p>
              <div id="userList" class="dialog">
@@ -120,13 +120,14 @@
                 				<%
 										def userList=[:]
 										def identityService = ActivitiUtils.identityService
-										identityService.findUsersByGroupId("user").each { user ->
-												userList[user.id]="${user.id}, user"
-										}
-										identityService.findUsersByGroupId("management").each { user ->
-												userList[user.id]="${user.id}, management"
-										}										
-										
+										def groups = identityService.createGroupQuery().list()
+										def users 
+										for (group in groups) { 
+										    users = identityService.createUserQuery().memberOfGroup(group.id).list()
+												for (user in users) {
+												    userList[user.id]="${user.id}, ${group.id}"
+                                                }
+										}								
 								 %>
                 <g:set var="username" value="${params.username}" scope="session" />
                 								 

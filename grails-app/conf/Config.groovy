@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-  /**
+
+/**
  *
  * Configuration for plugin testing - will not be included in the plugin zip
  * 
@@ -23,53 +23,56 @@
  */
 
 log4j = {
-    // Example of changing the log pattern for the default console
-    // appender:
-    //
-    //appenders {
-    //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
-    //}
-
-    error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
-           'org.codehaus.groovy.grails.web.pages', //  GSP
-           'org.codehaus.groovy.grails.web.sitemesh', //  layouts
-           'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
-           'org.codehaus.groovy.grails.web.mapping', // URL mapping
-           'org.codehaus.groovy.grails.commons', // core / classloading
-           'org.codehaus.groovy.grails.plugins', // plugins
-           'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
-           'org.springframework',
-           'org.hibernate',
-           'net.sf.ehcache.hibernate'
-
-    warn   'org.mortbay.log'
+	// Example of changing the log pattern for the default console
+	// appender:
+	//
+	//appenders {
+	//    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
+	//}
+	
+	error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
+	'org.codehaus.groovy.grails.web.pages', //  GSP
+	'org.codehaus.groovy.grails.web.sitemesh', //  layouts
+	'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
+	'org.codehaus.groovy.grails.web.mapping', // URL mapping
+	'org.codehaus.groovy.grails.commons', // core / classloading
+	'org.codehaus.groovy.grails.plugins', // plugins
+	'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
+	'org.springframework',
+	'org.hibernate',
+	'net.sf.ehcache.hibernate'
+	
+	warn   'org.mortbay.log'
 }
 
 activiti {
-				processEngineName = "activiti-engine-default"
-			  databaseName = "h2" 
-			  dbSchemaStrategy = "create-drop" // one of "create", "create-drop", "check-version", "drop-create"
-			  jobExecutorAutoActivation = false
+	processEngineName = "activiti-engine-default"
+	dataBaseName = "h2" 
+	dbSchemaStrategy = "create-drop" // one of "create", "create-drop", "check-version", "drop-create"
+	deploymentName = appName
+	deploymentResources = ["file:grails-app/conf/**/*.bpmn*.xml", "file:src/taskforms/**/*.form"]
+	jobExecutorAutoActivate = false
+	mailServerHost = "smtp.yourserver.com"
+	mailServerPort = "25"
+	mailServerUserName = ""
+	mailServerPassword = ""
+	mailServerDefaultFromAddress = "username@yourserver.com"
 }
 
 environments {
-    development {
-        activiti {
-			  processEngineName = "activiti-engine-dev"
-        }
-    }
-    test {
-        activiti {
-			  processEngineName = "activiti-engine-test"
-        }
-    }	
-    production {
-        activiti {
-			  processEngineName = "activiti-engine-prod"
-			  dbSchemaStrategy = "check-version"
-			  jobExecutorAutoActivation = true
-        }
-    }
+	development {
+		activiti { processEngineName = "activiti-engine-dev" }
+	}
+	test {
+		activiti { processEngineName = "activiti-engine-test" }
+	}	
+	production {
+		activiti {
+			processEngineName = "activiti-engine-prod"
+			dbSchemaStrategy = "check-version"
+			jobExecutorAutoActivate = true
+		}
+	}
 }	
 
 // The following properties have been added by the Upgrade process...

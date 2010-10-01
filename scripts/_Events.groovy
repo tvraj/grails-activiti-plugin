@@ -62,13 +62,18 @@ private void createActivitiPropertiesFile(String activitiPropertiesFilePath) {
 	createConfig()
 	def activitiPropertiesFile = new File(activitiPropertiesFilePath, "activiti.properties")
 	activitiPropertiesFile.withWriter {
-		it.writeLine """database=${config.activiti.databaseName}
+		it.writeLine """database=${config.activiti.dataBaseName}
 jdbc.driver=${config.dataSource.driverClassName}
 jdbc.url=${config.dataSource.url}
 jdbc.username=${config.dataSource.username}
 jdbc.password=${config.dataSource.password}
 db.schema.strategy=${config.activiti.dbSchemaStrategy?:"create-drop"}
-job.executor.auto.activate=${config.activiti.jobExecutorAutoActivation}
+job.executor.auto.activate=${config.activiti.jobExecutorAutoActivate}
+mail.smtp.host=${config.activiti.mailServerHost}
+mail.smtp.port=${config.activiti.mailServerPort}
+mail.smtp.user=${config.activiti.mailServerUserName}
+mail.smtp.password=${config.activiti.mailServerPassword}
+mail.default.from=${config.activiti.mailServerDefaultFromAddress}
 """
 	  }
 	 ant.echo "Content of generated activiti.properties file:"

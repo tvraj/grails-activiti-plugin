@@ -63,14 +63,20 @@ class ActivitiGrailsPlugin {
 
     def doWithSpring = {
     	println "Activiti Process Engine Initialization..."	
-    	processEngine(org.activiti.engine.impl.cfg.spring.ProcessEngineFactoryBean) {
+    	processEngine(org.activiti.spring.ProcessEngineFactoryBean) {
             processEngineName = CH.config.activiti.processEngineName?:"grails-activiti-noconfig"
-            dataBaseName = CH.config.activiti.databaseName?:"h2-noconfig"
+            dataBaseName = CH.config.activiti.dataBaseName?:"h2-noconfig"
             dbSchemaStrategy = CH.config.activiti.dbSchemaStrategy?
                                CH.config.activiti.dbSchemaStrategy.toUpperCase().replace("-", "_"):
 			       "create-drop".toUpperCase().replace("-", "_")
-            jobExecutorAutoActivate = CH.config.activiti.jobExecutorAutoActivation?:false
-            deploymentResources = "file:./grails-app/conf/**/*.bpmn*.xml"
+				    deploymentName = CH.config.activiti.deploymentName?:"deploymentName not defined."
+            deploymentResources = CH.config.activiti.deploymentResources?:["file:grails-app/conf/**/*.bpmn*.xml", "file:src/taskforms/**/*.form"]
+			      jobExecutorAutoActivate = CH.config.activiti.jobExecutorAutoActivate?:false
+				    mailServerHost = CH.config.activiti.mailServerHost?:"mailServerHost not defined."
+					  mailServerPort = CH.config.activiti.mailServerPort?:"mailServerPort not defined."
+					  mailServerUserName = CH.config.activiti.mailServerUserName?:"mailServerUserName not defined."
+					  mailServerPassword = CH.config.activiti.mailServerPassword?:"mailServerPassword not defined."
+					  mailServerDefaultFromAddress = CH.config.activiti.mailServerDefaultFromAddress?:"mailServerDefaultFromAddress not defined."
             dataSource = ref("dataSource")
             transactionManager = ref("transactionManager")
         }

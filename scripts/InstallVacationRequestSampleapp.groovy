@@ -24,19 +24,19 @@ includeTargets << grailsScript("Init")
 
 target(install: "Install Vacation Request Sample Application") {
 		String vacationRequestDir="${activitiPluginDir}/src/sample-app/vacation-request"
-		ant.copy (todir:"${basedir}/grails-app/conf") {
+		ant.copy (todir:"${basedir}/grails-app/conf", overwrite: true) {
 			fileset dir:"${vacationRequestDir}/grails-app/conf"
 		}
-		ant.copy (todir:"${basedir}/grails-app/controllers") {
+		ant.copy (todir:"${basedir}/grails-app/controllers", overwrite: true) {
 			fileset dir:"${vacationRequestDir}/grails-app/controllers"
 		}		
-		ant.copy (todir:"${basedir}/grails-app/domain") {
+		ant.copy (todir:"${basedir}/grails-app/domain", overwrite: true) {
 			fileset dir:"${vacationRequestDir}/grails-app/domain"
 		}	
-		ant.copy (todir:"${basedir}/grails-app/views") {
+		ant.copy (todir:"${basedir}/grails-app/views", overwrite: true) {
 			fileset dir:"${vacationRequestDir}/grails-app/views"
 		}						
-		ant.copy (todir:"${basedir}/src/groovy") {
+		ant.copy (todir:"${basedir}/src/groovy", overwrite: true) {
 			fileset dir:"${vacationRequestDir}/src/groovy"
 		}					
 }
