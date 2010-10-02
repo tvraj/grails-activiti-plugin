@@ -20,6 +20,7 @@
  --%>
  
 <%@ page import="org.activiti.engine.task.Task" %>
+<%@ page import="org.activiti.engine.task.IdentityLink" %>
 <%@ page import="org.grails.activiti.ActivitiUtils" %>
 
 <html>
@@ -72,7 +73,7 @@
                             <td>
 							                <g:form action="changePriority">
 							                  <g:hiddenField name="taskId" value="${taskInstance.id}" />
-							                	<g:select name="priority" from="${[1,2,3,4,5]}" 
+							                	<g:select name="priority" from="${100..1}" 
 							                		onchange="this.form.submit();" value="${taskInstance.priority}"/>	
 							                </g:form>                            
                             </td>
@@ -80,12 +81,10 @@
                             <td>
 								                				<%
 																		def userList=[:]
-																		def identityService = ActivitiUtils.identityService
-																		identityService.findUsersByGroupId("management").each { user ->
-																				userList[user.id]="${user.id}, management"
-																		}										
-																		
+																		def identityLinks = ActivitiUtils.activitiService.getIdentityLinks(taskInstance.id)
+                           									
 																 %>                            
+														  ${identityLinks} 
 							                <g:form action="setAssignee">
 							                  <g:hiddenField name="taskId" value="${taskInstance.id}" />
 							                	<g:select name="assignee" from="${userList}" optionKey="key" 

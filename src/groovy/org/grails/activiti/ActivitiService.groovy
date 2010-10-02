@@ -16,6 +16,8 @@ package org.grails.activiti
 
 import org.activiti.engine.task.Task
 import org.codehaus.groovy.grails.commons.ApplicationHolder as AH
+import grails.util.GrailsNameUtils
+import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
 
 /**
  *
@@ -27,27 +29,21 @@ class ActivitiService {
 	
 	def runtimeService
 	def taskService
-	static String ASCENDING_ORDER = "asc"
-	static String DESCENDING_ORDER = "desc"	
 	
 	def startProcess(Map params) {
 		runtimeService.startProcessInstanceByKey(params.controller, params)
 	}		
 	
 	private findTasks(String methodName, String username, int firstResult, int maxResults, Map orderBy) {
-		def taskQuery = taskService.createTaskQuery()
-		if (orderBy) {
-			orderBy.each { k, v ->
-				if (v.equals(ASCENDING_ORDER)) {
-					taskQuery.orderAsc(k)
-				} else {
-					taskQuery.orderDesc(k)
-				}
-			}
-		}				
+		def taskQuery = taskService.createTaskQuery()			
 		if (methodName) {
 			taskQuery."${methodName}"(username)
 		}
+		if (orderBy) {
+			orderBy.each { k, v ->
+				taskQuery."orderBy${GrailsNameUtils.getClassNameRepresentation(k == 'id'?'taskId':k)}"()."${v}"()
+			}
+		}			
 		taskQuery.listPage(firstResult, maxResults)
 	}
 	
@@ -72,25 +68,25 @@ class ActivitiService {
 	}
 	
 	def findAssignedTasks(Map params) {
-		def orderBy		
+		def orderBy = CH.config.activiti.assignedTasksOrderBy?:[:]
 		if (params.sort) {
-			orderBy = ["${params.sort}_":params.order]
+			orderBy << ["${params.sort}":params.order]
 		}
 		findTasks("assignee", params.username, getOffset(params.offset), params.max, orderBy)
 	}
 	
 	def findUnassignedTasks(Map params) {
-		def orderBy		
+		def orderBy = CH.config.activiti.unassignedTasksOrderBy?:[:]		
 		if (params.sort) {
-			orderBy = ["${params.sort}_":params.order]
+			orderBy << ["${params.sort}":params.order]
 		}
 		findTasks("candidateUser", params.username, getOffset(params.offset), params.max, orderBy)
 	}		
 	
 	def findAllTasks(Map params) {
-		def orderBy		
+		def orderBy = CH.config.activiti.allTasksOrderBy?:[:]		
 		if (params.sort) {
-			orderBy = ["${params.sort}_":params.order]
+			orderBy << ["${params.sort}":params.order]
 		}
 		findTasks(null, null, getOffset(params.offset), params.max, orderBy)
 	}
@@ -106,7 +102,7 @@ class ActivitiService {
 	}			  
 	
 	private deleteDomainObject(String taskId, String domainClassName) {
-		Task task = taskService.findTask(taskId)
+		Task task = taskService.createTaskQuery().taskId(taskId).singleResult()
 		String id = getDomainObjectId(task)
 		if (id) {
 			def domainClass = AH.getApplication().classLoader.loadClass(domainClassName?:getDomainClassName(task))
@@ -143,7 +139,7 @@ class ActivitiService {
 	}		
 	
 	def completeTask(String taskId, Map params) {
-		String executionId = taskService.findTask(taskId).executionId
+		String executionId = taskService.createTaskQuery().taskId(taskId).singleResult().executionId
 		setIdAndDomainClassName(executionId, params)
 		runtimeService.setVariable(executionId, "uri", null)
 		taskService.complete(taskId, params)
@@ -157,7 +153,7 @@ class ActivitiService {
 	}
 	
 	def setTaskFormUri(Map params) {
-		String executionId = taskService.findTask(params.taskId).executionId
+		String executionId = taskService.createTaskQuery().taskId(params.taskId).singleResult().executionId
 		setIdAndDomainClassName(executionId, params)
 		if (params.controller && params.action && params.id) {
 			runtimeService.setVariable(executionId, "uri", "/${params.controller}/${params.action}/${params.id}")
@@ -165,7 +161,7 @@ class ActivitiService {
 	}						
 	
 	String getTaskFormUri(String taskId) {
-		Task task = taskService.findTask(taskId)
+		Task task = taskService.createTaskQuery().taskId(taskId).singleResult()
 		String taskFormUri = runtimeService.getVariable(task.executionId, "uri")
 		if (!taskFormUri) {
 			def id = getDomainObjectId(task)?:""
@@ -183,5 +179,13 @@ class ActivitiService {
 	
 	def setPriority(String taskId, int priority) {
 		taskService.setPriority(taskId, priority)
+	}
+	
+	def getCandidateUserIds(String taskId) {
+		def identityLinks = taskService.getIdentityLinksForTask(taskId)
+		identityLinks.eachWithIndex { identityLink, i -> 
+			println "$i) ${identityLink.taskId}, ${identityLink.userId}, ${identityLink.groupId}"
+		}  		
+		return identityLinks
 	}
 }

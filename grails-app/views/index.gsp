@@ -120,14 +120,12 @@
                 				<%
 										def userList=[:]
 										def identityService = ActivitiUtils.identityService
-										def groups = identityService.createGroupQuery().list()
-										def users 
-										for (group in groups) { 
-										    users = identityService.createUserQuery().memberOfGroup(group.id).list()
-												for (user in users) {
-												    userList[user.id]="${user.id}, ${group.id}"
-                                                }
-										}								
+								    def users = identityService.createUserQuery().orderById().asc().list()
+										for (user in users) {
+                        def groups = identityService.createGroupQuery().member(user.id).orderById().asc().list()
+                        def groupIds = groups?" ${groups.collect{it.id}}":""
+										    userList[user.id]="${user.id}${groupIds}"
+                                        }		
 								 %>
                 <g:set var="username" value="${params.username}" scope="session" />
                 								 
