@@ -82,6 +82,6 @@ class TaskController {
 	
 	def changePriority = {
 		setPriority(params.taskId, Integer.parseInt(params.priority))
-		redirect(action: "allTasks", params: params)
+		redirect(action: "allTaskList", params: params)
 	}
 }

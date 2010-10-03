@@ -111,7 +111,7 @@
             you need not to worry as the original version of overwritten files are backup as same file name with .bak file extension 
             in the same directory, you can restore to original version of the overwritten file as necessary.
             This is the default page, feel free to modify it to either redirect to a controller or display whatever
-            content you may choose. Below is a list of activiti users from user and management group, you need to select an user as identity 
+            content you may choose. Below is a list of activiti users, you need to select an user as identity 
             from the combo box before you can start using Grails Activiti related functionality. Next, you will see the Activiti Controllers section, 
             you can click on TaskController to start browsing the task list of the user or you can click on "Start" of other Activiti 
             controllers to start process and working on task form. Further below is list of other controllers, click on each to execute its default action:</p>

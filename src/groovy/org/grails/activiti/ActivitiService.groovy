@@ -29,6 +29,7 @@ class ActivitiService {
 	
 	def runtimeService
 	def taskService
+	def identityService
 	
 	def startProcess(Map params) {
 		runtimeService.startProcessInstanceByKey(params.controller, params)
@@ -183,9 +184,16 @@ class ActivitiService {
 	
 	def getCandidateUserIds(String taskId) {
 		def identityLinks = taskService.getIdentityLinksForTask(taskId)
-		identityLinks.eachWithIndex { identityLink, i -> 
-			println "$i) ${identityLink.taskId}, ${identityLink.userId}, ${identityLink.groupId}"
+		def userIds = []
+		identityLinks.each { identityLink -> 
+			if (identityLink.groupId) {
+			    userIds << identityService.createUserQuery()
+					           .memberOfGroup(identityLink.groupId)
+								     .orderById().asc().list().collect { it.id }
+			} else {
+			    userIds << identityLink.userId
+			}
 		}  		
-		return identityLinks
+		return userIds.flatten().unique()
 	}
 }

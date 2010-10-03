@@ -81,10 +81,13 @@
                             <td>
 								                				<%
 																		def userList=[:]
-																		def identityLinks = ActivitiUtils.activitiService.getIdentityLinks(taskInstance.id)
-                           									
+																		def userIds = ActivitiUtils.activitiService.getCandidateUserIds(taskInstance.id)
+																		for (id in userIds) {
+								                        def groups = ActivitiUtils.identityService.createGroupQuery().member(id).orderById().asc().list()
+								                        def groupIds = groups?" ${groups.collect{it.id}}":""
+																		    userList[id]="${id}${groupIds}"
+								                                        }		                           									
 																 %>                            
-														  ${identityLinks} 
 							                <g:form action="setAssignee">
 							                  <g:hiddenField name="taskId" value="${taskInstance.id}" />
 							                	<g:select name="assignee" from="${userList}" optionKey="key" 

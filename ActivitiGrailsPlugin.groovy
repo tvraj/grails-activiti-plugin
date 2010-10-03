@@ -47,13 +47,14 @@ class ActivitiGrailsPlugin {
  With the Grails Activiti Plugin, workflow application can be created at your fingertips! 
 
  Project Site and Documentation: http://code.google.com/p/grails-activiti-plugin/
- Support: http://code.google.com/p/grails-activiti-plugin/issues/list 
+ Support: http://code.google.com/p/grails-activiti-plugin/issues/list
+ Discussion Forum: http://groups.google.com/group/grails-activiti-plugin
 '''
 
     // URL to the plugin's documentation
     def documentation = "http://grails.org/plugin/activiti"
 	
-    def watchedResources = "file:./grails-app/conf/**/*.bpmn*.xml"
+    def watchedResources = CH.config.activiti.deploymentResources?:["file:grails-app/conf/**/*.bpmn*.xml", "file:src/taskforms/**/*.form"]
   	
     def observe = ["controllers"]
 
@@ -90,6 +91,7 @@ class ActivitiGrailsPlugin {
         activitiService(org.grails.activiti.ActivitiService) {
             runtimeService = ref("runtimeService")
             taskService = ref("taskService")
+			      identityService = ref("identityService")
         }
     }
 
@@ -220,9 +222,12 @@ class ActivitiGrailsPlugin {
                     controllerClass.metaClass.getActivitiService = {-> return event.ctx.activitiService}
                     addActivitiMethods(controllerClass)
                 }
-            } else { // it is org.springframework.core.io.Resource
-			
             }
+            } else { // it is org.springframework.core.io.Resource
+            event.ctx.repositoryService.createDeployment()
+			                                 .name("ActivitiPluginAuto") 
+											                 .addInputStream(event.source.filename, event.source.inputStream)
+															         .deploy()  
         } 		
     }
 
