@@ -20,7 +20,10 @@
  --%>
  
 <%@ page import="org.grails.activiti.ActivitiUtils" %>
+<%@ page import="org.codehaus.groovy.grails.commons.ConfigurationHolder" %>
+<%@ page import="org.grails.activiti.ActivitiConstants" %>
 
+<g:set var="sessionUsernameKey" value="${ConfigurationHolder.config.activiti.sessionUsernameKey?:ActivitiConstants.DEFAULT_SESSION_USERNAME_KEY}" />
 <html>
     <head>
         <title>Welcome to Grails Activiti Plugin</title>
@@ -127,19 +130,19 @@
 										    userList[user.id]="${user.id}${groupIds}"
                                         }		
 								 %>
-                <g:set var="username" value="${params.username}" scope="session" />
+                <g:set var="${sessionUsernameKey}" value="${params.username}" scope="session" />
                 								 
 								<g:form>
                 	<g:select name="username" from="${userList}" optionKey="key" 
                 		optionValue="value" noSelection="['null': '[Select User]']"
-                		onchange="this.form.submit();" value="${session.username}"/>	
+                		onchange="this.form.submit();" value="${session[sessionUsernameKey]}"/>	
                 </g:form>
 
-                <g:if test="${session.username}">
-                					Current User: <strong>${session.username}</strong>
+                <g:if test="${session[sessionUsernameKey]}">
+                					Current User: <strong>${session[sessionUsernameKey]}</strong>
                 </g:if>
             </div>
-            <g:if test="${session.username}">
+            <g:if test="${session[sessionUsernameKey]}">
             <div id="controllerList" class="dialog">
                 <h2>Activiti Controllers:</h2>
                 <ul>

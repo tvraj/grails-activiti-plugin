@@ -12,14 +12,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 import org.activiti.engine.runtime.ProcessInstance
 import org.activiti.engine.task.Task
 import grails.util.GrailsNameUtils
 import grails.util.Environment
 import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
 import org.codehaus.groovy.grails.commons.ControllerArtefactHandler
-import org.springframework.core.io.Resource
+import org.springframework.core.io.Resource 
+import org.grails.activiti.ActivitiConstants
 
 /**
  *
@@ -54,9 +55,11 @@ class ActivitiGrailsPlugin {
     // URL to the plugin's documentation
     def documentation = "http://grails.org/plugin/activiti"
 	
-    def watchedResources = CH.config.activiti.deploymentResources?:["file:grails-app/conf/**/*.bpmn*.xml", "file:src/taskforms/**/*.form"]
+    def watchedResources = CH.config.activiti.deploymentResources?:ActivitiConstants.DEFAULT_DEPLOYMENT_RESOURCES
   	
     def observe = ["controllers"]
+	  
+    String sessionUsernameKey = CH.config.activiti.sessionUsernameKey?:ActivitiConstants.DEFAULT_SESSION_USERNAME_KEY
 
     def doWithWebDescriptor = { xml ->
         // TODO Implement additions to web.xml (optional), this event occurs before 
@@ -65,19 +68,19 @@ class ActivitiGrailsPlugin {
     def doWithSpring = {
     	println "Activiti Process Engine Initialization..."	
     	processEngine(org.activiti.spring.ProcessEngineFactoryBean) {
-            processEngineName = CH.config.activiti.processEngineName?:"grails-activiti-noconfig"
-            dataBaseName = CH.config.activiti.dataBaseName?:"h2-noconfig"
+            processEngineName = CH.config.activiti.processEngineName?:ActivitiConstants.DEFAULT_PROCESS_ENGINE_NAME
+            dataBaseName = CH.config.activiti.dataBaseName?:ActivitiConstants.DEFAULT_DATABASE_NAME
             dbSchemaStrategy = CH.config.activiti.dbSchemaStrategy?
-                               CH.config.activiti.dbSchemaStrategy.toUpperCase().replace("-", "_"):
-			       "create-drop".toUpperCase().replace("-", "_")
-				    deploymentName = CH.config.activiti.deploymentName?:"deploymentName not defined."
-            deploymentResources = CH.config.activiti.deploymentResources?:["file:grails-app/conf/**/*.bpmn*.xml", "file:src/taskforms/**/*.form"]
-			      jobExecutorAutoActivate = CH.config.activiti.jobExecutorAutoActivate?:false
-				    mailServerHost = CH.config.activiti.mailServerHost?:"mailServerHost not defined."
-					  mailServerPort = CH.config.activiti.mailServerPort?:"mailServerPort not defined."
-					  mailServerUserName = CH.config.activiti.mailServerUserName?:"mailServerUserName not defined."
-					  mailServerPassword = CH.config.activiti.mailServerPassword?:"mailServerPassword not defined."
-					  mailServerDefaultFromAddress = CH.config.activiti.mailServerDefaultFromAddress?:"mailServerDefaultFromAddress not defined."
+            CH.config.activiti.dbSchemaStrategy.toUpperCase().replace("-", "_"):
+            ActivitiConstants.DEFAULT_DB_SCHEMA_STRATEGY.toUpperCase().replace("-", "_")
+            deploymentName = CH.config.activiti.deploymentName?:ActivitiConstants.DEFAULT_DEPLOYMENT_NAME
+            deploymentResources = CH.config.activiti.deploymentResources?:ActivitiConstants.DEFAULT_DEPLOYMENT_RESOURCES
+            jobExecutorAutoActivate = CH.config.activiti.jobExecutorAutoActivate?:ActivitiConstants.DEFAULT_JOB_EXECUTOR_AUTO_ACTIVATE
+            mailServerHost = CH.config.activiti.mailServerHost?:ActivitiConstants.DEFAULT_MAIL_SERVER_HOST
+            mailServerPort = CH.config.activiti.mailServerPort?:ActivitiConstants.DEFAULT_MAIL_SERVER_PORT
+            mailServerUserName = CH.config.activiti.mailServerUserName?:ActivitiConstants.DEFAULT_MAIL_SERVER_USERNAME
+            mailServerPassword = CH.config.activiti.mailServerPassword?:ActivitiConstants.DEFAULT_MAIL_SERVER_PASSWORD
+            mailServerDefaultFromAddress = CH.config.activiti.mailServerDefaultFromAddress?:ActivitiConstants.DEFAULT_MAIL_SERVER_FROM_ADDRESS
             dataSource = ref("dataSource")
             transactionManager = ref("transactionManager")
         }
@@ -91,7 +94,7 @@ class ActivitiGrailsPlugin {
         activitiService(org.grails.activiti.ActivitiService) {
             runtimeService = ref("runtimeService")
             taskService = ref("taskService")
-			      identityService = ref("identityService")
+            identityService = ref("identityService")
         }
     }
 
@@ -109,17 +112,17 @@ class ActivitiGrailsPlugin {
     def addActivitiMethods(controllerClass) {
         controllerClass.metaClass.start = { Map params ->
             activitiService.with {
-                params.username = session.username
+                params.username = session[sessionUsernameKey]
                 ProcessInstance pi = startProcess(params)
-                Task task = getUnassignedTask(session.username, pi.id)
-                claimTask(task.id, session.username)
+                Task task = getUnassignedTask(session[sessionUsernameKey], pi.id)
+                claimTask(task.id, session[sessionUsernameKey])
                 redirect uri:getTaskFormUri(task.id)
             }
         }
 				
         controllerClass.metaClass.startTask = { String taskId ->
             activitiService.with {
-                claimTask(taskId, session.username)
+                claimTask(taskId, session[sessionUsernameKey])
                 redirect uri:getTaskFormUri(taskId)
             }
         }
@@ -139,7 +142,7 @@ class ActivitiGrailsPlugin {
         }
 						
         controllerClass.metaClass.claimTask = { String taskId ->
-            activitiService.claimTask(taskId, session.username)
+            activitiService.claimTask(taskId, session[sessionUsernameKey])
         }
 				
         controllerClass.metaClass.revokeTask = { String taskId ->
@@ -167,11 +170,11 @@ class ActivitiGrailsPlugin {
 						
 		
         controllerClass.metaClass.getUnassignedTasksCount = {->
-            activitiService.getUnassignedTasksCount(session.username)
+            activitiService.getUnassignedTasksCount(session[sessionUsernameKey])
         }
 				
         controllerClass.metaClass.getAssignedTasksCount = {->
-            activitiService.getAssignedTasksCount(session.username)
+            activitiService.getAssignedTasksCount(session[sessionUsernameKey])
         }
 				
         controllerClass.metaClass.getAllTasksCount = {->
@@ -179,7 +182,7 @@ class ActivitiGrailsPlugin {
         }
 				
         controllerClass.metaClass.findUnassignedTasks = { Map params ->
-            params.username=session.username
+            params.username=session[sessionUsernameKey]
             if (!params.sort) {
                 params.sort = "id"
                 params.order = "desc"
@@ -188,7 +191,7 @@ class ActivitiGrailsPlugin {
         }
 				
         controllerClass.metaClass.findAssignedTasks = { Map params ->
-            params.username=session.username
+            params.username=session[sessionUsernameKey]
             if (!params.sort) {
                 params.sort = "id"
                 params.order = "desc"
@@ -223,11 +226,11 @@ class ActivitiGrailsPlugin {
                     addActivitiMethods(controllerClass)
                 }
             }
-            } else { // it is org.springframework.core.io.Resource
+        } else { // it is org.springframework.core.io.Resource
             event.ctx.repositoryService.createDeployment()
-			                                 .name("ActivitiPluginAuto") 
-											                 .addInputStream(event.source.filename, event.source.inputStream)
-															         .deploy()  
+            .name(ActivitiConstants.PLUGIN_AUTO_DEPLOYMENT_NAME)
+            .addInputStream(event.source.filename, event.source.inputStream)
+            .deploy()
         } 		
     }
 

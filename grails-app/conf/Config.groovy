@@ -50,7 +50,7 @@ activiti {
 	dataBaseName = "h2" 
 	dbSchemaStrategy = "create-drop" // one of "create", "create-drop", "check-version", "drop-create"
 	deploymentName = appName
-	deploymentResources = ["file:grails-app/conf/**/*.bpmn*.xml", "file:src/taskforms/**/*.form"]
+	deploymentResources = ["file:grails-app/conf/**/*.bpmn*.xml", "file:grails-app/conf/**/*.png", "file:src/taskforms/**/*.form"]
 	jobExecutorAutoActivate = false
 	mailServerHost = "smtp.yourserver.com"
 	mailServerPort = "25"

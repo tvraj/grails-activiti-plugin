@@ -20,19 +20,23 @@
  --%>
  
 <%@ page import="org.activiti.engine.task.Task" %>
+<%@ page import="org.codehaus.groovy.grails.commons.ConfigurationHolder" %>
+<%@ page import="org.grails.activiti.ActivitiConstants" %>
+
+<g:set var="sessionUsernameKey" value="${ConfigurationHolder.config.activiti.sessionUsernameKey?:ActivitiConstants.DEFAULT_SESSION_USERNAME_KEY}" />
 
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="main" />
-        <title><g:message code="unassignedTasks.title" default="Unassigned Tasks of {0}" args="[session.username]"/></title>
+        <title><g:message code="unassignedTasks.title" default="Unassigned Tasks of {0}" args="[session[sessionUsernameKey]]"/></title>
     </head>
     <body>
         <div class="nav">
     			<g:render template="navigation" />
     		</div>
         <div class="body">
-            <h1><g:message code="unassignedTasks.title" default="Unassigned Tasks of {0}" args="[session.username]"/></h1>
+            <h1><g:message code="unassignedTasks.title" default="Unassigned Tasks of {0}" args="[session[sessionUsernameKey]]"/></h1>
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>

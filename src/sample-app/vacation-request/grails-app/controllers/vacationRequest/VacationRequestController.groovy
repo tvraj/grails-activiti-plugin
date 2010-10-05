@@ -15,7 +15,8 @@
 package vacationRequest
 
 import org.grails.activiti.ApprovalStatus
-
+import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
+import org.grails.activiti.ActivitiConstants
   /**
  *
  * @author <a href='mailto:limcheekin@vobject.com'>Lim Chee Kin</a>
@@ -44,7 +45,8 @@ class VacationRequestController {
 
     def create = {
         def vacationRequestInstance = new VacationRequest()
-				vacationRequestInstance.employeeName = session.username
+        String sessionUsernameKey = CH.config.activiti.sessionUsernameKey?:ActivitiConstants.DEFAULT_SESSION_USERNAME_KEY
+				vacationRequestInstance.employeeName = session[sessionUsernameKey]
         vacationRequestInstance.properties = params
         return [vacationRequestInstance: vacationRequestInstance,
                 myTasksCount: assignedTasksCount]

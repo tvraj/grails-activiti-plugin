@@ -22,13 +22,6 @@
  */
 
 ant.mkdir(dir:"${basedir}/src/taskforms")
-/* 
-* Required to move juel-2.2.1.jar to ${basedir}/lib 
-* to solve java.lang.NoSuchMethodError: javax.el.ExpressionFactory.newInstance().
-* Due to javax.el package conflict with tomcat-core.jar of tomcat plugin.
-* ant.move and ant.delete not working in windows environment
-*/
-// ant.copy file:"${pluginBasedir}/lib/juel-2.2.1.jar", todir:"${basedir}/lib", overwrite:true
 
 // Backup existing files
 ant.move file:"${basedir}/grails-app/views/index.gsp", tofile:"${basedir}/grails-app/views/index.bak"
@@ -51,13 +44,16 @@ private void updateConfig() {
     processEngineName = "activiti-engine-default"
 	  dataBaseName = "h2" 
 	  deploymentName = appName
-	  deploymentResources = ["file:grails-app/conf/**/*.bpmn*.xml", "file:src/taskforms/**/*.form"]
+	  deploymentResources = ["file:grails-app/conf/**/*.bpmn*.xml", 
+	                         "file:grails-app/conf/**/*.png", 
+	                         "file:src/taskforms/**/*.form"]
 	  jobExecutorAutoActivate = false
 	  mailServerHost = "smtp.yourserver.com"
 	  mailServerPort = "25"
 	  mailServerUserName = ""
 	  mailServerPassword = ""
 	  mailServerDefaultFromAddress = "username@yourserver.com"
+	  sessionUsernameKey = "username"
 }
 
 environments {

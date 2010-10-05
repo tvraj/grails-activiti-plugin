@@ -24,6 +24,7 @@
  */
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
+import org.grails.activiti.ActivitiConstants
 
 includeTargets << grailsScript("Init")
 includeTargets << grailsScript("Compile")
@@ -53,8 +54,8 @@ target(createBar: "Create Activiti Business Archive (BAR) that contains process 
 	ant.delete dir:"${basedir}/target/bar"
 	ant.mkdir dir:"${basedir}/target/bar"
 	deploymentResources = config.activiti.deploymentResources
-	println "deploymentResources = $config.activiti.deploymentResources"
-	deploymentResources = deploymentResources?[deploymentResources].flatten():["file:grails-app/conf/**/*.bpmn*.xml", "file:src/taskforms/**/*.form"]
+	deploymentResources = deploymentResources?[deploymentResources].flatten():ActivitiConstants.DEFAULT_DEPLOYMENT_RESOURCES
+	ant.echo "deploymentResources = $deploymentResources"
 	resolver = new PathMatchingResourcePatternResolver()
 	deploymentResources.each { resource ->
 	    resources = resolver.getResources(resource)  
@@ -65,15 +66,6 @@ target(createBar: "Create Activiti Business Archive (BAR) that contains process 
 	ant.jar (destfile: "${basedir}/target/${appName}-${appVersion}.bar") {
 		fileset dir:"${basedir}/target/bar"
 	}	
-}
-
-target(createJar: "Create Java Archive (JAR) that contains process executables (.class file)") {
-	depends(clean, compile)
-	ant.jar (destfile: "${basedir}/target/${appName}-${appVersion}.jar") {
-		fileset(dir:"${basedir}/target/classes") {
-			include(name: "**/*.class")
-		}		
-	}
 }
 
 setDefaultTarget(deploy)
