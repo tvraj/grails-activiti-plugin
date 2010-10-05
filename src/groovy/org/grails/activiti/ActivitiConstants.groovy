@@ -21,9 +21,9 @@ package org.grails.activiti
  * @since 5.0.beta2
  */
 class ActivitiConstants {
-	static List DEFAULT_DEPLOYMENT_RESOURCES = ["file:grails-app/conf/**/*.bpmn*.xml",
-	"file:grails-app/conf/**/*.png", 
-	"file:src/taskforms/**/*.form"]
+	static List DEFAULT_DEPLOYMENT_RESOURCES = ["file:./grails-app/conf/**/*.bpmn*.xml",
+	"file:./grails-app/conf/**/*.png", 
+	"file:./src/taskforms/**/*.form"]
 	static String DEFAULT_PROCESS_ENGINE_NAME = "grails-activiti-noconfig"
 	static String DEFAULT_DATABASE_NAME = "h2-noconfig"
 	static String DEFAULT_DB_SCHEMA_STRATEGY = "create-drop"

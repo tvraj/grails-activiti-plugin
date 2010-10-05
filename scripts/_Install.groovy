@@ -44,9 +44,9 @@ private void updateConfig() {
     processEngineName = "activiti-engine-default"
 	  dataBaseName = "h2" 
 	  deploymentName = appName
-	  deploymentResources = ["file:grails-app/conf/**/*.bpmn*.xml", 
-	                         "file:grails-app/conf/**/*.png", 
-	                         "file:src/taskforms/**/*.form"]
+	  deploymentResources = ["file:./grails-app/conf/**/*.bpmn*.xml", 
+	                         "file:./grails-app/conf/**/*.png", 
+	                         "file:./src/taskforms/**/*.form"]
 	  jobExecutorAutoActivate = false
 	  mailServerHost = "smtp.yourserver.com"
 	  mailServerPort = "25"
