@@ -80,7 +80,7 @@ mail.default.from=${config.activiti.mailServerDefaultFromAddress}
 	 ant.echo activitiPropertiesFile.text
 }	
 
-eventWarStart = { warName ->
+eventCreateWarStart = {warname, stagingDir ->
   if (grailsEnv == "production") {
       ant.echo "Remove unnecessary JAR files..."
       ant.delete file:"${stagingDir}/WEB-INF/lib/subethasmtp-smtp-1.2.jar"
