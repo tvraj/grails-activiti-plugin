@@ -3,13 +3,11 @@ import org.junit.*
 import static org.junit.Assert.*
 import static org.hamcrest.CoreMatchers.*
 import static org.junit.matchers.JUnitMatchers.*
-import org.activiti.test.*
+import org.activiti.engine.test.*
 
 class @artifact.name@ {
-
-    @Rule public LogInitializer logSetup = new LogInitializer()
-  
-    @Rule public ProcessDeployer deployer = new ProcessDeployer()
+ 
+    @Rule public ActivitiRule activitiRule = new ActivitiRule()
 
     @Before void setUp() {
     }
@@ -17,7 +15,7 @@ class @artifact.name@ {
     @After void tearDown() {
     }
 
-    @Test @ProcessDeclared void something() {
+    @Test @Deployment void something() {
 
     }
 }

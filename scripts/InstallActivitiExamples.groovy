@@ -24,8 +24,9 @@
 includeTargets << grailsScript("Init")
 
 target(main: "Unzip examples-source.jar to test/unit directory") {
-    ant.unzip src:"${activitiPluginDir}/src/examples-source.jar", 
-							dest:"${basedir}/test/unit"
+		ant.copy (todir:"${basedir}/test/unit", overwrite: true) {
+			fileset dir:"${activitiPluginDir}/src/activiti-examples"
+		}							
 		ant.echo "Activiti examples installed successfully."					
 		ant.echo "You can run the installed examples with 'grails test-app unit:'."					
 }
