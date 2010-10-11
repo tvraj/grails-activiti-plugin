@@ -21,19 +21,19 @@ package org.grails.activiti
  * @since 5.0.beta2
  */
 class ActivitiConstants {
-	static List DEFAULT_DEPLOYMENT_RESOURCES = ["file:./grails-app/conf/**/*.bpmn*.xml",
+	static final List DEFAULT_DEPLOYMENT_RESOURCES = ["file:./grails-app/conf/**/*.bpmn*.xml",
 	"file:./grails-app/conf/**/*.png", 
 	"file:./src/taskforms/**/*.form"]
-	static String DEFAULT_PROCESS_ENGINE_NAME = "grails-activiti-noconfig"
-	static String DEFAULT_DATABASE_NAME = "h2-noconfig"
-	static String DEFAULT_DB_SCHEMA_STRATEGY = "create-drop"
-	static String DEFAULT_DEPLOYMENT_NAME = "deploymentName not defined."
-	static Boolean DEFAULT_JOB_EXECUTOR_AUTO_ACTIVATE = false
-	static String DEFAULT_MAIL_SERVER_HOST = "mailServerHost not defined."
-	static String DEFAULT_MAIL_SERVER_PORT = "mailServerPort not defined."
-	static String DEFAULT_MAIL_SERVER_USERNAME = "mailServerUserName not defined."
-	static String DEFAULT_MAIL_SERVER_PASSWORD = "mailServerPassword not defined."
-	static String DEFAULT_MAIL_SERVER_FROM_ADDRESS = "mailServerDefaultFromAddress not defined."
-	static String PLUGIN_AUTO_DEPLOYMENT_NAME = "ActivitiPluginAutoDeploy"
-	static String DEFAULT_SESSION_USERNAME_KEY = "username"
+	static final String DEFAULT_PROCESS_ENGINE_NAME = "grails-activiti-noconfig"
+	static final String DEFAULT_DATABASE_NAME = "h2-noconfig"
+	static final String DEFAULT_DB_SCHEMA_STRATEGY = "create-drop"
+	static final String DEFAULT_DEPLOYMENT_NAME = "deploymentName not defined."
+	static final Boolean DEFAULT_JOB_EXECUTOR_AUTO_ACTIVATE = false
+	static final String DEFAULT_MAIL_SERVER_HOST = "mailServerHost not defined."
+	static final String DEFAULT_MAIL_SERVER_PORT = "mailServerPort not defined."
+	static final String DEFAULT_MAIL_SERVER_USERNAME = "mailServerUserName not defined."
+	static final String DEFAULT_MAIL_SERVER_PASSWORD = "mailServerPassword not defined."
+	static final String DEFAULT_MAIL_SERVER_FROM_ADDRESS = "mailServerDefaultFromAddress not defined."
+	static final String PLUGIN_AUTO_DEPLOYMENT_NAME = "ActivitiPluginAutoDeploy"
+	static final String DEFAULT_SESSION_USERNAME_KEY = "username"
 }
