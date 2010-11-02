@@ -20,7 +20,6 @@ import org.activiti.engine.test.ActivitiRule;
 import org.activiti.engine.*;
 import org.junit.*;
 import static org.junit.Assert.*;
-
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -34,9 +33,10 @@ public class TaskCandidateTest {
   private static final String KERMIT = "kermit";
 
   private static final String GONZO = "gonzo";
-    
+
   @Before
-  public void setUp() throws Exception {    
+  public void setUp() throws Exception {
+    
     IdentityService identityService = activitiRule.getIdentityService();
     Group accountants = identityService.newGroup("accountancy");
     identityService.saveGroup(accountants);
@@ -58,7 +58,7 @@ public class TaskCandidateTest {
 
   @After
   public void tearDown() throws Exception {
-	  IdentityService identityService = activitiRule.getIdentityService();
+    IdentityService identityService = activitiRule.getIdentityService();
     identityService.deleteUser(KERMIT);
     identityService.deleteUser(GONZO);
     identityService.deleteGroup("sales");
@@ -68,7 +68,7 @@ public class TaskCandidateTest {
   }
 
   @Deployment
-  @Test 
+  @Test
   public void testSingleCandidateGroup() {
 
     // Deploy and start process
@@ -79,12 +79,12 @@ public class TaskCandidateTest {
     TaskService taskService = activitiRule.getTaskService();
     List<Task> tasks = taskService
       .createTaskQuery()
-      .assignee(KERMIT)
+      .taskAssignee(KERMIT)
       .list();
     assertTrue(tasks.isEmpty());
 
     // The task should be visible in the candidate task list
-    tasks = taskService.createTaskQuery().candidateUser(KERMIT).list();
+    tasks = taskService.createTaskQuery().taskCandidateUser(KERMIT).list();
     assertEquals(1, tasks.size());
     Task task = tasks.get(0);
     assertEquals("Pay out expenses", task.getName());
@@ -93,29 +93,30 @@ public class TaskCandidateTest {
     taskService.claim(task.getId(), KERMIT);
 
     // The task must now be gone from the candidate task list
-    tasks = taskService.createTaskQuery().candidateUser(KERMIT).list();
+    tasks = taskService.createTaskQuery().taskCandidateUser(KERMIT).list();
     assertTrue(tasks.isEmpty());
 
     // The task will be visible on the personal task list
     tasks = taskService
       .createTaskQuery()
-      .assignee(KERMIT)
+      .taskAssignee(KERMIT)
       .list();
     assertEquals(1, tasks.size());
+    task = tasks.get(0);
     assertEquals("Pay out expenses", task.getName());
 
     // Completing the task ends the process
     taskService.complete(task.getId());
 
     assertNull("Process ended", activitiRule
-    	      .getRuntimeService()
-    	      .createProcessInstanceQuery()
-    	      .processInstanceId(processInstance.getId())
-    	      .singleResult());
+               .getRuntimeService()
+               .createProcessInstanceQuery()
+               .processInstanceId(processInstance.getId())
+               .singleResult());
   }
 
   @Deployment
-  @Test 
+  @Test
   public void testMultipleCandidateGroups() {
 
     // Deploy and start process
@@ -126,75 +127,75 @@ public class TaskCandidateTest {
     TaskService taskService = activitiRule.getTaskService();
     List<Task> tasks = taskService
       .createTaskQuery()
-      .assignee(KERMIT)
+      .taskAssignee(KERMIT)
       .list();
     
     assertTrue(tasks.isEmpty());
     tasks = taskService
       .createTaskQuery()
-      .assignee(GONZO)
+      .taskAssignee(GONZO)
       .list();
     
     assertTrue(tasks.isEmpty());
 
     // The task should be visible in the candidate task list of Gonzo and Kermit
     // and anyone in the management/accountancy group
-    assertEquals(1, taskService.createTaskQuery().candidateUser(KERMIT).list().size());
-    assertEquals(1, taskService.createTaskQuery().candidateUser(GONZO).list().size());
-    assertEquals(1, taskService.createTaskQuery().candidateGroup("management").count());
-    assertEquals(1, taskService.createTaskQuery().candidateGroup("accountancy").count());
-    assertEquals(0, taskService.createTaskQuery().candidateGroup("sales").count());
+    assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT).list().size());
+    assertEquals(1, taskService.createTaskQuery().taskCandidateUser(GONZO).list().size());
+    assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("management").count());
+    assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("accountancy").count());
+    assertEquals(0, taskService.createTaskQuery().taskCandidateGroup("sales").count());
 
     // Gonzo claims the task
-    tasks = taskService.createTaskQuery().candidateUser(GONZO).list();
+    tasks = taskService.createTaskQuery().taskCandidateUser(GONZO).list();
     Task task = tasks.get(0);
     assertEquals("Approve expenses", task.getName());
     taskService.claim(task.getId(), GONZO);
 
     // The task must now be gone from the candidate task lists
-    assertTrue(taskService.createTaskQuery().candidateUser(KERMIT).list().isEmpty());
-    assertTrue(taskService.createTaskQuery().candidateUser(GONZO).list().isEmpty());
-    assertEquals(0, taskService.createTaskQuery().candidateGroup("management").count());
+    assertTrue(taskService.createTaskQuery().taskCandidateUser(KERMIT).list().isEmpty());
+    assertTrue(taskService.createTaskQuery().taskCandidateUser(GONZO).list().isEmpty());
+    assertEquals(0, taskService.createTaskQuery().taskCandidateGroup("management").count());
 
     // The task will be visible on the personal task list of Gonzo
     assertEquals(1, taskService
       .createTaskQuery()
-      .assignee(GONZO)
+      .taskAssignee(GONZO)
       .count());
 
     // But not on the personal task list of (for example) Kermit
-    assertEquals(0, taskService.createTaskQuery().assignee(KERMIT).count());
+    assertEquals(0, taskService.createTaskQuery().taskAssignee(KERMIT).count());
 
     // Completing the task ends the process
     taskService.complete(task.getId());
 
     assertNull("Process ended", activitiRule
-    	      .getRuntimeService()
-    	      .createProcessInstanceQuery()
-    	      .processInstanceId(processInstance.getId())
-    	      .singleResult());
+               .getRuntimeService()
+               .createProcessInstanceQuery()
+               .processInstanceId(processInstance.getId())
+               .singleResult());
   }
 
   @Deployment
-  @Test 
+  @Test
   public void testMultipleCandidateUsers() {
     RuntimeService runtimeService = activitiRule.getRuntimeService();
     runtimeService.startProcessInstanceByKey("multipleCandidateUsers");
 
     TaskService taskService = activitiRule.getTaskService();
-    assertEquals(1, taskService.createTaskQuery().candidateUser(GONZO).list().size());
-    assertEquals(1, taskService.createTaskQuery().candidateUser(KERMIT).list().size());
+    assertEquals(1, taskService.createTaskQuery().taskCandidateUser(GONZO).list().size());
+    assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT).list().size());
   }
 
   @Deployment
-  @Test 
+  @Test
   public void testMixedCandidateUserAndGroup() {
     RuntimeService runtimeService = activitiRule.getRuntimeService();
     runtimeService.startProcessInstanceByKey("mixedCandidateUserAndGroup");
 
     TaskService taskService = activitiRule.getTaskService();
-    assertEquals(1, taskService.createTaskQuery().candidateUser(GONZO).list().size());
-    assertEquals(1, taskService.createTaskQuery().candidateUser(KERMIT).list().size());
+    assertEquals(1, taskService.createTaskQuery().taskCandidateUser(GONZO).list().size());
+    assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT).list().size());
   }
 
 }

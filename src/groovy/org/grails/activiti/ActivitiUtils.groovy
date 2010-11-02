@@ -56,4 +56,8 @@ class ActivitiUtils {
 	static getHistoryService() {
 		context.getBean("historyService")
 	}
+	
+	static getFormService() {
+		context.getBean("formService")
+	}	
 }

@@ -51,7 +51,7 @@ public class EmailServiceTaskTest {
   }
   
   @Deployment
-  @Test 
+  @Test
   public void testSendEmail() throws Exception {
     
     String from = "ordershipping@activiti.org";

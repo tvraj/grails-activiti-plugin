@@ -13,28 +13,27 @@
 
 package org.activiti.examples.bpmn.callactivity;
 
+import org.activiti.engine.test.ActivitiRule;
+import org.activiti.engine.*;
+import org.junit.*;
+import static org.junit.Assert.*;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
-// new added
-import org.activiti.engine.test.ActivitiRule;
-import org.activiti.engine.*;
-import org.junit.*;
-import static org.junit.Assert.*;
-
 
 /**
  * @author Joram Barrez
  */
 public class CallActivityTest {
-	@Rule public ActivitiRule activitiRule = new ActivitiRule();
-	  
-  @Test @Deployment(resources={
+  @Rule public ActivitiRule activitiRule = new ActivitiRule();
+
+  @Deployment(resources={
     "org/activiti/examples/bpmn/callactivity/orderProcess.bpmn20.xml",
     "org/activiti/examples/bpmn/callactivity/checkCreditProcess.bpmn20.xml"       
   })
+  @Test
   public void testOrderProcessWithCallActivity() {
     // After the process has started, the 'verify credit history' task should be active
     RuntimeService runtimeService = activitiRule.getRuntimeService();
@@ -45,9 +44,9 @@ public class CallActivityTest {
     assertEquals("Verify credit history", verifyCreditTask.getName());
     
     // Verify with Query API
-    ProcessInstance subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstance(pi.getId()).singleResult();
+    ProcessInstance subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(pi.getId()).singleResult();
     assertNotNull(subProcessInstance);
-    assertEquals(pi.getId(), runtimeService.createProcessInstanceQuery().subProcessInstance(subProcessInstance.getId()).singleResult().getId());
+    assertEquals(pi.getId(), runtimeService.createProcessInstanceQuery().subProcessInstanceId(subProcessInstance.getId()).singleResult().getId());
     
     // Completing the task with approval, will end the subprocess and continue the original process
     taskService.complete(verifyCreditTask.getId(), CollectionUtil.singletonMap("creditApproved", true));

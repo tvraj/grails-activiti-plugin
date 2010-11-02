@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <definitions id="definitions"
 	targetNamespace="http://activiti.org/bpmn20" 
+    xmlns:activiti="http://activiti.org/bpmn"
 	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL">
 	
 	<process id="financialReport" name="Monthly financial report">
 	
 		<startEvent id="theStart" />
 		
-		<sequenceFlow id='flow1' sourceRef='theStart' targetRef='writeReportTask' />
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="writeReportTask" />
 		
 		<userTask id="writeReportTask" name="Write monthly financial report" >
 		  <documentation>
@@ -20,7 +21,7 @@
       </potentialOwner>
 		</userTask>
 		
-		<sequenceFlow id='flow2' sourceRef='writeReportTask' targetRef='verifyReportTask' />
+		<sequenceFlow id="flow2" sourceRef="writeReportTask" targetRef="verifyReportTask" />
 			
 		<userTask id="verifyReportTask" name="Verify monthly financial report" >
 		  <documentation>
@@ -34,7 +35,7 @@
       </potentialOwner>
 		</userTask>
 		
-		<sequenceFlow id='flow3' sourceRef='verifyReportTask' targetRef='theEnd' />
+		<sequenceFlow id="flow3" sourceRef="verifyReportTask" targetRef="theEnd" />
 			
 		<endEvent id="theEnd" />
 			

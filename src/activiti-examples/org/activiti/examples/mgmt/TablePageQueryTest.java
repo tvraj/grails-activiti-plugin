@@ -30,7 +30,7 @@ import org.activiti.engine.task.Task;
 public class TablePageQueryTest {
   @Rule public ActivitiRule activitiRule = new ActivitiRule();
   
-  @Test 
+  @Test
   public void testGetTablePage() {
     List<String> taskIds = generateDummyTasks(20);
     
@@ -57,7 +57,8 @@ public class TablePageQueryTest {
     taskService.deleteTasks(taskIds);
   }
   
-  @Test public void testGetSortedTablePage() {
+  @Test
+  public void testGetSortedTablePage() {
     List<String> taskIds = generateDummyTasks(15);
     
     // With an ascending sort

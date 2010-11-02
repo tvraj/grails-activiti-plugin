@@ -42,18 +42,20 @@ private void updateConfig() {
 			it.writeLine '\n// Added by the Grails Activiti plugin:'
 			it.writeLine '''activiti {
     processEngineName = "activiti-engine-default"
-	  dataBaseName = "h2" 
+	  databaseType = "h2" 
 	  deploymentName = appName
 	  deploymentResources = ["file:./grails-app/conf/**/*.bpmn*.xml", 
 	                         "file:./grails-app/conf/**/*.png", 
 	                         "file:./src/taskforms/**/*.form"]
-	  jobExecutorAutoActivate = false
+    jobExecutorActivate = false
 	  mailServerHost = "smtp.yourserver.com"
 	  mailServerPort = "25"
-	  mailServerUserName = ""
+	  mailServerUsername = ""
 	  mailServerPassword = ""
 	  mailServerDefaultFromAddress = "username@yourserver.com"
+	  historyLevel = "audit" // "none", "activity", "audit" or "full"
 	  sessionUsernameKey = "username"
+	  useFormKey = false
 }
 
 environments {
@@ -66,14 +68,16 @@ environments {
     test {
         activiti {
 			  processEngineName = "activiti-engine-test"
-			  dbSchemaStrategy = "create-drop"
+			  dbSchemaStrategy = "create-if-necessary"
+	      mailServerHost = "localhost"
+	      mailServerPort = "5025"			 			  
         }
     }	
     production {
         activiti {
 			  processEngineName = "activiti-engine-prod"
 			  dbSchemaStrategy = "check-version"
-			  jobExecutorAutoActivate = true
+			  jobExecutorActivate = true
         }
     }
 }	

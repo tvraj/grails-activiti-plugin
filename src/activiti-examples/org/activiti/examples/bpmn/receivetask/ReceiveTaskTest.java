@@ -17,7 +17,6 @@ import org.activiti.engine.test.ActivitiRule;
 import org.activiti.engine.*;
 import org.junit.*;
 import static org.junit.Assert.*;
-
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -30,7 +29,7 @@ public class ReceiveTaskTest {
   @Rule public ActivitiRule activitiRule = new ActivitiRule();
 
   @Deployment
-  @Test 
+  @Test
   public void testWaitStateBehavior() {
     RuntimeService runtimeService = activitiRule.getRuntimeService();
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("receiveTask");
@@ -41,11 +40,11 @@ public class ReceiveTaskTest {
     assertNotNull(execution);
     
     runtimeService.signal(execution.getId());
-    assertNull(activitiRule
-  	      .getRuntimeService()
-  	      .createProcessInstanceQuery()
-  	      .processInstanceId(pi.getId())
-  	      .singleResult());
+    assertNull("Process ended", activitiRule
+               .getRuntimeService()
+               .createProcessInstanceQuery()
+               .processInstanceId(pi.getId())
+               .singleResult());
   }
 
 }

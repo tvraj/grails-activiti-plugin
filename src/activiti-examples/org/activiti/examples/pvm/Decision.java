@@ -12,9 +12,9 @@
  */
 package org.activiti.examples.pvm;
 
-import org.activiti.pvm.activity.ActivityBehavior;
-import org.activiti.pvm.activity.ActivityExecution;
-import org.activiti.pvm.process.PvmTransition;
+import org.activiti.engine.impl.pvm.PvmTransition;
+import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 
 /**

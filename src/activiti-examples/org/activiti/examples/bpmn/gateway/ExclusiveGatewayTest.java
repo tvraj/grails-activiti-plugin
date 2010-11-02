@@ -38,7 +38,7 @@ public class ExclusiveGatewayTest {
    * goes to another task, allowing us to test the decision very easily.
    */
   @Deployment
-  @Test 
+  @Test
   public void testDecisionFunctionality() {
 
     Map<String, Object> variables = new HashMap<String, Object>();

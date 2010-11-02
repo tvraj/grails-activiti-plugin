@@ -57,8 +57,8 @@ target(createBar: "Create Activiti Business Archive (BAR) that contains process 
 		deploymentResources = [deploymentResources].flatten()
 	} else {
 	  ant.echo "deploymentResources not configured. Use ActivitiConstants.DEFAULT_DEPLOYMENT_RESOURCES..."
-	  activitiConstantsClass = classLoader.loadClass("org.grails.activiti.ActivitiConstants")
-	  deploymentResources = activitiConstantsClass.DEFAULT_DEPLOYMENT_RESOURCES
+	  ActivitiConstants = classLoader.loadClass("org.grails.activiti.ActivitiConstants")
+	  deploymentResources = ActivitiConstants.DEFAULT_DEPLOYMENT_RESOURCES
 	}
 	ant.echo "deploymentResources = $deploymentResources"
 	resolver = new PathMatchingResourcePatternResolver()

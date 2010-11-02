@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <definitions id="definitions"
-             typeLanguage="http://www.w3.org/2001/XMLSchema"
-             expressionLanguage="http://www.w3.org/1999/XPath"
              targetNamespace="http://activiti.org/bpmn20" 
              xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xmlns:activiti="http://activiti.org/bpmn-extensions">
+             xmlns:activiti="http://activiti.org/bpmn">
   
   <process id="vacationRequest" name="Vacation request">
   
@@ -15,7 +13,7 @@
     <sequenceFlow id="flow0" sourceRef="request" targetRef="createRequest" />
     
     <userTask id="createRequest" name="Initiate vacation request"
-              activiti:form="/vacationRequest/create" >
+              activiti:formKey="/vacationRequest/create" >
       <documentation>
         Vacation request by ${username}
       </documentation> 
@@ -29,7 +27,7 @@
     <sequenceFlow id="flow1" sourceRef="createRequest" targetRef="handleRequest" />
     
     <userTask id="handleRequest" name="Handle vacation request"
-              activiti:form="/vacationRequest/approval" >
+              activiti:formKey="/vacationRequest/approval" >
       <documentation>
         Vacation request by ${username}
       </documentation> 
@@ -48,9 +46,7 @@
       <conditionExpression xsi:type="tFormalExpression">${vacationApproved}</conditionExpression>
     </sequenceFlow>
     
-    <serviceTask id="sendApprovalMail" 
-                 name="Send approval e-mail" 
-                 activiti:class="vacationRequest.MailSender" />  
+    <serviceTask id="sendApprovalMail" name="Send approval e-mail" activiti:class="vacationRequest.MailSender" />  
     
     <sequenceFlow id='flow4' sourceRef="sendApprovalMail" targetRef="theEnd1" />
     
@@ -61,7 +57,7 @@
     </sequenceFlow>
     
     <userTask id="adjustVacationRequestTask" name="Adjust vacation request" 
-              activiti:form="/vacationRequest/edit">
+              activiti:formKey="/vacationRequest/edit">
       <documentation>
         Your manager has not approved your vacation request.
       </documentation>

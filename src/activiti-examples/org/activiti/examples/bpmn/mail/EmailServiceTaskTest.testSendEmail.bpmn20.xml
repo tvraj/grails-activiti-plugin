@@ -1,8 +1,7 @@
 <definitions 
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:activiti="http://activiti.org/bpmn-extensions"
-  targetNamespace="http://www.activiti.org/bpmn2.0">
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
 
   <process id="sendMailExample" >
 
@@ -11,11 +10,11 @@
     
     <serviceTask id="sendMail" activiti:type="mail">
       <extensionElements>
-        <activiti:field activiti:name="from" activiti:string-value="${sender}" />
-        <activiti:field activiti:name="to" activiti:string-value="${recipient}" />
-        <activiti:field activiti:name="subject" activiti:string-value="Your order ${orderId} has been shipped" />
-        <activiti:field activiti:name="html">
-          <activiti:string>
+        <activiti:field name="from" expression="${sender}" />
+        <activiti:field name="to" expression="${recipient}" />
+        <activiti:field name="subject" expression="Your order ${orderId} has been shipped" />
+        <activiti:field name="html">
+          <expression>
             <![CDATA[
               <html>
                 <body>
@@ -29,7 +28,7 @@
                 </body>
               </html>
             ]]>
-          </activiti:string>
+          </expression>
         </activiti:field>      
       </extensionElements>
     </serviceTask>

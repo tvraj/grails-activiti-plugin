@@ -30,7 +30,7 @@ import org.grails.activiti.ActivitiConstants
  */
 class ActivitiGrailsPlugin {
     // the plugin version
-    def version = "5.0.beta2"
+    def version = "5.0.rc1"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.3.3 > *"
     // the other plugins this plugin depends on
@@ -60,7 +60,8 @@ class ActivitiGrailsPlugin {
     def observe = ["controllers"]
 	  
     String sessionUsernameKey = CH.config.activiti.sessionUsernameKey?:ActivitiConstants.DEFAULT_SESSION_USERNAME_KEY
-
+    Boolean useFormKey = CH.config.activiti.useFormKey?:ActivitiConstants.DEFAULT_USE_FORM_KEY
+        
     def doWithWebDescriptor = { xml ->
         // TODO Implement additions to web.xml (optional), this event occurs before 
     }
@@ -69,32 +70,35 @@ class ActivitiGrailsPlugin {
     	println "Activiti Process Engine Initialization..."	
     	processEngine(org.activiti.spring.ProcessEngineFactoryBean) {
             processEngineName = CH.config.activiti.processEngineName?:ActivitiConstants.DEFAULT_PROCESS_ENGINE_NAME
-            dataBaseName = CH.config.activiti.dataBaseName?:ActivitiConstants.DEFAULT_DATABASE_NAME
+            databaseType = CH.config.activiti.databaseType?:ActivitiConstants.DEFAULT_DATABASE_TYPE
             dbSchemaStrategy = CH.config.activiti.dbSchemaStrategy?
             CH.config.activiti.dbSchemaStrategy.toUpperCase().replace("-", "_"):
             ActivitiConstants.DEFAULT_DB_SCHEMA_STRATEGY.toUpperCase().replace("-", "_")
             deploymentName = CH.config.activiti.deploymentName?:ActivitiConstants.DEFAULT_DEPLOYMENT_NAME
             deploymentResources = CH.config.activiti.deploymentResources?:ActivitiConstants.DEFAULT_DEPLOYMENT_RESOURCES
-            jobExecutorAutoActivate = CH.config.activiti.jobExecutorAutoActivate?:ActivitiConstants.DEFAULT_JOB_EXECUTOR_AUTO_ACTIVATE
+            jobExecutorActivate = CH.config.activiti.jobExecutorActivate?:ActivitiConstants.DEFAULT_JOB_EXECUTOR_ACTIVATE
             mailServerHost = CH.config.activiti.mailServerHost?:ActivitiConstants.DEFAULT_MAIL_SERVER_HOST
             mailServerPort = CH.config.activiti.mailServerPort?:ActivitiConstants.DEFAULT_MAIL_SERVER_PORT
-            mailServerUserName = CH.config.activiti.mailServerUserName?:ActivitiConstants.DEFAULT_MAIL_SERVER_USERNAME
+            mailServerUsername = CH.config.activiti.mailServerUsername?:ActivitiConstants.DEFAULT_MAIL_SERVER_USERNAME
             mailServerPassword = CH.config.activiti.mailServerPassword?:ActivitiConstants.DEFAULT_MAIL_SERVER_PASSWORD
             mailServerDefaultFromAddress = CH.config.activiti.mailServerDefaultFromAddress?:ActivitiConstants.DEFAULT_MAIL_SERVER_FROM_ADDRESS
+			      historyLevel = CH.config.activiti.historyLevel?:ActivitiConstants.DEFAULT_HISTORY_LEVEL
             dataSource = ref("dataSource")
             transactionManager = ref("transactionManager")
         }
     	runtimeService(processEngine:"getRuntimeService") 
-        repositoryService(processEngine:"getRepositoryService")
+      repositoryService(processEngine:"getRepositoryService")
     	taskService(processEngine:"getTaskService") 
     	managementService(processEngine:"getManagementService") 
     	identityService(processEngine:"getIdentityService")
     	historyService(processEngine:"getHistoryService")
+		  formService(processEngine:"getFormService")
 		
-        activitiService(org.grails.activiti.ActivitiService) {
+      activitiService(org.grails.activiti.ActivitiService) {
             runtimeService = ref("runtimeService")
             taskService = ref("taskService")
             identityService = ref("identityService")
+			      formService = ref("formService")
         }
     }
 

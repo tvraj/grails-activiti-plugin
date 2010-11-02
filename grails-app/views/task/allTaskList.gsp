@@ -53,7 +53,7 @@
                             <g:sortableColumn property="name" title="${message(code: 'task.name.label', default: 'Name')}" />
                         
                             <g:sortableColumn property="description" title="${message(code: 'task.description.label', default: 'Description')}" />
-                        
+                            <th>Create Time</th>
                             <g:sortableColumn property="priority" title="${message(code: 'task.priority.label', default: 'Priority')}" />
                         
                             <g:sortableColumn property="assignee" title="${message(code: 'task.assignee.label', default: 'Assignee')}" />
@@ -69,6 +69,8 @@
                             <td>${fieldValue(bean: taskInstance, field: "name")}</td>
                         
                             <td>${fieldValue(bean: taskInstance, field: "description")}</td>
+                            
+                            <td><g:formatDate date="${taskInstance.createTime}" /></td>
                         
                             <td>
 							                <g:form action="changePriority">
@@ -83,7 +85,7 @@
 																		def userList=[:]
 																		def userIds = ActivitiUtils.activitiService.getCandidateUserIds(taskInstance.id)
 																		for (id in userIds) {
-								                        def groups = ActivitiUtils.identityService.createGroupQuery().member(id).orderById().asc().list()
+								                        def groups = ActivitiUtils.identityService.createGroupQuery().groupMember(id).orderByGroupId().asc().list()
 								                        def groupIds = groups?" ${groups.collect{it.id}}":""
 																		    userList[id]="${id}${groupIds}"
 								                                        }		                           									

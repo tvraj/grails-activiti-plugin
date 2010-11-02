@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="definitions" 
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:activiti="http://activiti.org/bpmn-extensions"
-  targetNamespace="http://www.activiti.org/bpmn2.0">
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
   
   <process id="expressionFieldInjection">
   
@@ -13,10 +12,13 @@
     
     <serviceTask id="javaService" 
                  name="Java service invocation" 
-                 activiti:class="org.activiti.examples.bpmn.servicetask.ToUpperCaseFieldInjected">
+                 activiti:class="org.activiti.examples.bpmn.servicetask.ReverseStringsFieldInjected">
       <extensionElements>
-        <activiti:field activiti:name="text">
-          <activiti:string>Hello ${gender == 'male' ? 'Mr.' : 'Mrs.'} ${name}</activiti:string>
+        <activiti:field name="text1">
+          <expression>${genderBean.getGenderString(gender)}</expression>
+        </activiti:field>
+        <activiti:field name="text2">
+          <expression>Hello ${gender == 'male' ? 'Mr.' : 'Mrs.'} ${name}</expression>
         </activiti:field>
       </extensionElements>             
     </serviceTask>

@@ -46,33 +46,44 @@ log4j = {
 }
 
 activiti {
-	processEngineName = "activiti-engine-default"
-	dataBaseName = "h2" 
-	dbSchemaStrategy = "create-drop" // one of "create", "create-drop", "check-version", "drop-create"
-	deploymentName = appName
-	deploymentResources = ["file:grails-app/conf/**/*.bpmn*.xml", "file:grails-app/conf/**/*.png", "file:src/taskforms/**/*.form"]
-	jobExecutorAutoActivate = false
-	mailServerHost = "smtp.yourserver.com"
-	mailServerPort = "25"
-	mailServerUserName = ""
-	mailServerPassword = ""
-	mailServerDefaultFromAddress = "username@yourserver.com"
+    processEngineName = "activiti-engine-default"
+	  databaseType = "h2" 
+	  deploymentName = appName
+	  deploymentResources = ["file:./grails-app/conf/**/*.bpmn*.xml", 
+	                         "file:./grails-app/conf/**/*.png", 
+	                         "file:./src/taskforms/**/*.form"]
+	  jobExecutorActivate = false
+	  mailServerHost = "smtp.yourserver.com"
+	  mailServerPort = "25"
+	  mailServerUsername = ""
+	  mailServerPassword = ""
+	  mailServerDefaultFromAddress = "username@yourserver.com"
+	  historyLevel = "audit" // "none", "activity", "audit" or "full"
+	  sessionUsernameKey = "username"
 }
 
 environments {
-	development {
-		activiti { processEngineName = "activiti-engine-dev" }
-	}
-	test {
-		activiti { processEngineName = "activiti-engine-test" }
-	}	
-	production {
-		activiti {
-			processEngineName = "activiti-engine-prod"
-			dbSchemaStrategy = "check-version"
-			jobExecutorAutoActivate = true
-		}
-	}
+    development {
+        activiti {
+			  processEngineName = "activiti-engine-dev"
+			  dbSchemaStrategy = "create-drop" // "create-drop" or "check-version"	  
+        }
+    }
+    test {
+        activiti {
+			  processEngineName = "activiti-engine-test"
+			  dbSchemaStrategy = "create-if-necessary"
+	      mailServerHost = "localhost"
+	      mailServerPort = "5025"			  
+        }
+    }	
+    production {
+        activiti {
+			  processEngineName = "activiti-engine-prod"
+			  dbSchemaStrategy = "check-version"
+			  jobExecutorActivate = true
+        }
+    }
 }	
 
 // The following properties have been added by the Upgrade process...

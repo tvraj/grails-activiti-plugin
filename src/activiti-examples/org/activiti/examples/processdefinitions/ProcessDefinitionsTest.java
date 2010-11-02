@@ -33,7 +33,7 @@ public class ProcessDefinitionsTest {
 
   private static final String TARGET_NAMESPACE = "targetNamespace='http://activiti.org/BPMN20'";
 
-  @Test 
+  @Test
   public void testGetProcessDefinitions() {
     List<String> deploymentIds = new ArrayList<String>();
     deploymentIds.add(deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report 1' />" + "</definitions>")));
@@ -45,10 +45,8 @@ public class ProcessDefinitionsTest {
     RepositoryService repositoryService = activitiRule.getRepositoryService();
     List<ProcessDefinition> processDefinitions = repositoryService
       .createProcessDefinitionQuery()
-      .orderByKey()
-      .asc()
-      .orderByVersion()
-      .desc()
+      .orderByProcessDefinitionKey().asc()
+      .orderByProcessDefinitionVersion().desc()
       .list();
 
     assertNotNull(processDefinitions);
@@ -88,7 +86,8 @@ public class ProcessDefinitionsTest {
     deleteDeployments(deploymentIds);
   }
 
-  @Test public void testDeployIdenticalProcessDefinitions() {
+  @Test
+  public void testDeployIdenticalProcessDefinitions() {
     List<String> deploymentIds = new ArrayList<String>();
     deploymentIds.add(deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>")));
     deploymentIds.add(deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>")));
@@ -96,10 +95,8 @@ public class ProcessDefinitionsTest {
     RepositoryService repositoryService = activitiRule.getRepositoryService();
     List<ProcessDefinition> processDefinitions = repositoryService
       .createProcessDefinitionQuery()
-      .orderByKey()
-      .asc()
-      .orderByVersion()
-      .desc()
+      .orderByProcessDefinitionKey().asc()
+      .orderByProcessDefinitionVersion().desc()
       .list();
 
     assertNotNull(processDefinitions);
@@ -122,12 +119,14 @@ public class ProcessDefinitionsTest {
   
   private String deployProcessString(String processString) {
     String resourceName = "xmlString." + BpmnDeployer.BPMN_RESOURCE_SUFFIX;
-    return activitiRule.getRepositoryService().createDeployment().addString(resourceName, processString).deploy().getId();
+    RepositoryService repositoryService = activitiRule.getRepositoryService();
+    return repositoryService.createDeployment().addString(resourceName, processString).deploy().getId();
   }
   
   private void deleteDeployments(Collection<String> deploymentIds) {
+	  RepositoryService repositoryService = activitiRule.getRepositoryService();
     for (String deploymentId : deploymentIds) {
-    	activitiRule.getRepositoryService().deleteDeployment(deploymentId);
+      repositoryService.deleteDeployment(deploymentId);
     }
   }
 }

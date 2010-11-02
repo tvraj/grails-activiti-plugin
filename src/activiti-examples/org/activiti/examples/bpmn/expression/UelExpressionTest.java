@@ -29,9 +29,8 @@ import org.activiti.engine.test.Deployment;
 public class UelExpressionTest {
   @Rule public ActivitiRule activitiRule = new ActivitiRule();
 
- 
   @Deployment
-  @Test 
+  @Test
   public void testValueAndMethodExpression() {
     // An order of price 150 is a standard order (goes through an UEL value expression)
     UelExpressionTestOrder order = new UelExpressionTestOrder(150);

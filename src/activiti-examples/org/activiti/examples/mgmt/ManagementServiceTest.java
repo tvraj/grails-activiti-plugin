@@ -12,6 +12,7 @@
  */
 package org.activiti.examples.mgmt;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import org.activiti.engine.ManagementService;
@@ -30,7 +31,7 @@ import org.activiti.engine.management.TableMetaData;
 public class ManagementServiceTest {
   @Rule public ActivitiRule activitiRule = new ActivitiRule();
 
-  @Test 
+  @Test
   public void testTableCount() {
     ManagementService managementService = activitiRule.getManagementService();
     Map<String, Long> tableCount = managementService.getTableCount();
@@ -42,27 +43,36 @@ public class ManagementServiceTest {
     assertEquals(new Long(0), tableCount.get("ACT_ID_GROUP"));
     assertEquals(new Long(0), tableCount.get("ACT_ID_MEMBERSHIP"));
     assertEquals(new Long(0), tableCount.get("ACT_ID_USER"));
-    assertEquals(new Long(0), tableCount.get("ACT_RE_PROC_DEF"));
+    assertEquals(new Long(0), tableCount.get("ACT_RE_PROCDEF"));
     assertEquals(new Long(0), tableCount.get("ACT_RU_TASK"));
-    assertEquals(new Long(0), tableCount.get("ACT_RU_IDENTITY_LINK"));
+    assertEquals(new Long(0), tableCount.get("ACT_RU_IDENTITYLINK"));
     ;
   }
 
-  @Test 
+  @Test
   public void testGetTableMetaData() {
     ManagementService managementService = activitiRule.getManagementService();
     TableMetaData tableMetaData = managementService.getTableMetaData("ACT_RU_TASK");
     assertEquals(tableMetaData.getColumnNames().size(), tableMetaData.getColumnTypes().size());
-    assertEquals(14, tableMetaData.getColumnNames().size());
+    assertEquals(11, tableMetaData.getColumnNames().size());
 
     int assigneeIndex = tableMetaData.getColumnNames().indexOf("ASSIGNEE_");
     int createTimeIndex = tableMetaData.getColumnNames().indexOf("CREATE_TIME_");
 
     assertTrue(assigneeIndex >= 0);
     assertTrue(createTimeIndex >= 0);
-
-    assertEquals("VARCHAR", tableMetaData.getColumnTypes().get(assigneeIndex));
-    assertEquals("TIMESTAMP", tableMetaData.getColumnTypes().get(createTimeIndex));
+    
+    assertOneOf(new String [] {"VARCHAR", "NVARCHAR2"}, tableMetaData.getColumnTypes().get(assigneeIndex));
+    assertOneOf(new String [] {"TIMESTAMP", "TIMESTAMP(6)"}, tableMetaData.getColumnTypes().get(createTimeIndex));
+  }
+  
+  private void assertOneOf(String[] possibleValues, String currentValue) {
+    for(String value : possibleValues) {
+      if(currentValue.equals(value)) {
+        return;
+      }
+    }
+    fail("Value '" + currentValue + "' should be one of: " + Arrays.deepToString(possibleValues));
   }
 
 }

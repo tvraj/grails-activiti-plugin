@@ -4,16 +4,16 @@
              targetNamespace="http://activiti.org/bpmn20" 
              xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xmlns:activiti="http://activiti.org/bpmn-extensions">
+             xmlns:activiti="http://activiti.org/bpmn">
   
   <process id="vacationRequest" name="Vacation request">
   
-    <startEvent id="request" activiti:form="org/activiti/examples/taskforms/request.form" />
+    <startEvent id="request" activiti:formKey="org/activiti/examples/taskforms/request.form" />
 
     <sequenceFlow id="flow1" sourceRef="request" targetRef="handleRequest" />
     
     <userTask id="handleRequest" name="Handle vacation request"
-              activiti:form="org/activiti/examples/taskforms/approve.form" >
+              activiti:formKey="org/activiti/examples/taskforms/approve.form" >
       <documentation>
         Vacation request by ${employeeName}
       </documentation> 
@@ -24,26 +24,26 @@
       </potentialOwner>         
     </userTask>
 
-    <sequenceFlow id='flow2' sourceRef='handleRequest' targetRef='requestApprovedDecision' />
+    <sequenceFlow id="flow2" sourceRef="handleRequest" targetRef="requestApprovedDecision" />
     
     <exclusiveGateway id="requestApprovedDecision" name="Request approved?" />
     
-    <sequenceFlow id='flow3' sourceRef="requestApprovedDecision" targetRef="sendApprovalMail">
+    <sequenceFlow id="flow3" sourceRef="requestApprovedDecision" targetRef="sendApprovalMail">
       <conditionExpression xsi:type="tFormalExpression">${vacationApproved}</conditionExpression>
     </sequenceFlow>
     
     <task id="sendApprovalMail" name="Send confirmation e-mail" />
     
-    <sequenceFlow id='flow4' sourceRef="sendApprovalMail" targetRef="theEnd1" />
+    <sequenceFlow id="flow4" sourceRef="sendApprovalMail" targetRef="theEnd1" />
     
     <endEvent id="theEnd1" />
     
-    <sequenceFlow id='flow5' sourceRef="requestApprovedDecision" targetRef="adjustVacationRequestTask">
+    <sequenceFlow id="flow5" sourceRef="requestApprovedDecision" targetRef="adjustVacationRequestTask">
       <conditionExpression xsi:type="tFormalExpression">${!vacationApproved}</conditionExpression>
     </sequenceFlow>
     
     <userTask id="adjustVacationRequestTask" name="Adjust vacation request" 
-              activiti:form="org/activiti/examples/taskforms/adjustRequest.form">
+              activiti:formKey="org/activiti/examples/taskforms/adjustRequest.form">
       <documentation>
         Your manager has not approved your vacation request.
       </documentation>
@@ -54,15 +54,15 @@
       </humanPerformer>  
     </userTask>
      
-    <sequenceFlow id='flow6' sourceRef="adjustVacationRequestTask" targetRef="resendRequestDecision" />
+    <sequenceFlow id="flow6" sourceRef="adjustVacationRequestTask" targetRef="resendRequestDecision" />
     
     <exclusiveGateway id="resendRequestDecision" name="Resend request?" />
     
-    <sequenceFlow id='flow7' sourceRef="resendRequestDecision" targetRef="handleRequest">
+    <sequenceFlow id="flow7" sourceRef="resendRequestDecision" targetRef="handleRequest">
       <conditionExpression xsi:type="tFormalExpression">${resendRequest}</conditionExpression>
     </sequenceFlow>
     
-     <sequenceFlow id='flow8' sourceRef="resendRequestDecision" targetRef="theEnd2">
+     <sequenceFlow id="flow8" sourceRef="resendRequestDecision" targetRef="theEnd2">
       <conditionExpression xsi:type="tFormalExpression">${!resendRequest}</conditionExpression>
     </sequenceFlow>
           

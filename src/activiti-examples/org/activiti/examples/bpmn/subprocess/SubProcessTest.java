@@ -31,9 +31,9 @@ import org.activiti.engine.task.TaskQuery;
 public class SubProcessTest {
   @Rule public ActivitiRule activitiRule = new ActivitiRule();
   
-  @Test public void testSimpleSubProcess() {
-    
-	    RepositoryService repositoryService = activitiRule.getRepositoryService();	  
+  @Test
+  public void testSimpleSubProcess() {
+	  RepositoryService repositoryService = activitiRule.getRepositoryService();
     Deployment deployment = repositoryService.createDeployment()
                   .addClasspathResource("org/activiti/examples/bpmn/subprocess/SubProcessTest.fixSystemFailureProcess.bpmn20.xml")
                   .deploy();
@@ -44,11 +44,12 @@ public class SubProcessTest {
     TaskService taskService = activitiRule.getTaskService();
     List<Task> tasks = taskService.createTaskQuery()
                                   .processInstanceId(pi.getId())
-                                  .orderByName()
+                                  .orderByTaskName()
                                   .asc()
                                   .list();
 
     // Tasks are ordered by name (see query)
+    assertEquals(2, tasks.size());
     Task investigateHardwareTask = tasks.get(0);
     Task investigateSoftwareTask = tasks.get(1);
     assertEquals("Investigate hardware", investigateHardwareTask.getName());

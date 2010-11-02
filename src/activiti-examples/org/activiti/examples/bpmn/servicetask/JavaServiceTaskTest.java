@@ -15,6 +15,7 @@ package org.activiti.examples.bpmn.servicetask;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.test.ActivitiRule;
 import org.activiti.engine.*;
 import org.junit.*;
@@ -31,7 +32,7 @@ public class JavaServiceTaskTest {
   @Rule public ActivitiRule activitiRule = new ActivitiRule();
 
   @Deployment
-  @Test 
+  @Test
   public void testJavaServiceDelegation() {
     RuntimeService runtimeService = activitiRule.getRuntimeService();
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("javaServiceDelegation", CollectionUtil.singletonMap("input", "Activiti BPM Engine"));
@@ -43,7 +44,7 @@ public class JavaServiceTaskTest {
   }
   
   @Deployment
-  @Test 
+  @Test
   public void testFieldInjection() {
     RuntimeService runtimeService = activitiRule.getRuntimeService();
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("fieldInjection");
@@ -55,18 +56,33 @@ public class JavaServiceTaskTest {
   }
   
   @Deployment
-  @Test 
+  @Test
   public void testExpressionFieldInjection() {
     Map<String, Object> vars = new HashMap<String, Object>();
     vars.put("name", "kermit");
     vars.put("gender", "male");
+    vars.put("genderBean", new GenderBean());
+    
     RuntimeService runtimeService = activitiRule.getRuntimeService();
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("expressionFieldInjection", vars);
     Execution execution = runtimeService.createExecutionQuery()
       .processInstanceId(pi.getId())
       .activityId("waitState")
       .singleResult();
-    assertEquals("HELLO MR. KERMIT", runtimeService.getVariable(execution.getId(), "var"));
+    
+    assertEquals("timrek .rM olleH", runtimeService.getVariable(execution.getId(), "var2"));
+    assertEquals("elam :si redneg ruoY", runtimeService.getVariable(execution.getId(), "var1"));
+  }
+
+  @Test
+  public void testIllegalUseOfResultVariableName() {
+    try {
+    RepositoryService repositoryService = activitiRule.getRepositoryService();
+      repositoryService.createDeployment().addClasspathResource("org/activiti/examples/bpmn/servicetask/JavaServiceTaskTest.testIllegalUseOfResultVariableName.bpmn20.xml").deploy();
+      fail();
+    } catch (ActivitiException e) {
+      assertTrue(e.getMessage().contains("resultVariableName"));
+    }
   }
 
 }

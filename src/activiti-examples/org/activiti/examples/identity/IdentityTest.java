@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
 public class IdentityTest {
   @Rule public ActivitiRule activitiRule = new ActivitiRule();
 
-  @Test 
+  @Test
   public void testAuthentication() {
     IdentityService identityService = activitiRule.getIdentityService();
     User user = identityService.newUser("johndoe");
@@ -42,7 +42,7 @@ public class IdentityTest {
     identityService.deleteUser("johndoe");
   }
 
-  @Test 
+  @Test
   public void testFindGroupsByUserAndType() {
     IdentityService identityService = activitiRule.getIdentityService();
     Group sales = identityService.newGroup("sales");
@@ -76,20 +76,20 @@ public class IdentityTest {
 
     identityService.createMembership("joesmoe", "user");
 
-    List<Group> groups = identityService.createGroupQuery().member("johndoe").type("security-role").list();
+    List<Group> groups = identityService.createGroupQuery().groupMember("johndoe").groupType("security-role").list();
     Set<String> groupIds = getGroupIds(groups);
     Set<String> expectedGroupIds = new HashSet<String>();
     expectedGroupIds.add("user");
     expectedGroupIds.add("admin");
     assertEquals(expectedGroupIds, groupIds);
 
-    groups = identityService.createGroupQuery().member("joesmoe").type("security-role").list();
+    groups = identityService.createGroupQuery().groupMember("joesmoe").groupType("security-role").list();
     groupIds = getGroupIds(groups);
     expectedGroupIds = new HashSet<String>();
     expectedGroupIds.add("user");
     assertEquals(expectedGroupIds, groupIds);
 
-    groups = identityService.createGroupQuery().member("jackblack").type("security-role").list();
+    groups = identityService.createGroupQuery().groupMember("jackblack").groupType("security-role").list();
     assertTrue(groups.isEmpty());
 
     identityService.deleteGroup("sales");
@@ -101,7 +101,7 @@ public class IdentityTest {
     identityService.deleteUser("jackblack");
   }
 
-  @Test 
+  @Test
   public void testUser() {
     IdentityService identityService = activitiRule.getIdentityService();
     User user = identityService.newUser("johndoe");
@@ -110,7 +110,7 @@ public class IdentityTest {
     user.setEmail("johndoe@alfresco.com");
     identityService.saveUser(user);
 
-    user = identityService.createUserQuery().id("johndoe").singleResult();
+    user = identityService.createUserQuery().userId("johndoe").singleResult();
     assertEquals("johndoe", user.getId());
     assertEquals("John", user.getFirstName());
     assertEquals("Doe", user.getLastName());
@@ -119,21 +119,21 @@ public class IdentityTest {
     identityService.deleteUser("johndoe");
   }
 
-  @Test 
+  @Test
   public void testGroup() {
     IdentityService identityService = activitiRule.getIdentityService();
     Group group = identityService.newGroup("sales");
     group.setName("Sales division");
     identityService.saveGroup(group);
 
-    group = identityService.createGroupQuery().id("sales").singleResult();
+    group = identityService.createGroupQuery().groupId("sales").singleResult();
     assertEquals("sales", group.getId());
     assertEquals("Sales division", group.getName());
 
     identityService.deleteGroup("sales");
   }
 
-  @Test 
+  @Test
   public void testMembership() {
     IdentityService identityService = activitiRule.getIdentityService();
     Group sales = identityService.newGroup("sales");
@@ -157,13 +157,13 @@ public class IdentityTest {
     identityService.createMembership("joesmoe", "development");
     identityService.createMembership("jackblack", "development");
 
-    List<Group> groups = identityService.createGroupQuery().member("johndoe").list();
+    List<Group> groups = identityService.createGroupQuery().groupMember("johndoe").list();
     assertEquals(createStringSet("sales"), getGroupIds(groups));
 
-    groups = identityService.createGroupQuery().member("joesmoe").list();
+    groups = identityService.createGroupQuery().groupMember("joesmoe").list();
     assertEquals(createStringSet("sales", "development"), getGroupIds(groups));
 
-    groups = identityService.createGroupQuery().member("jackblack").list();
+    groups = identityService.createGroupQuery().groupMember("jackblack").list();
     assertEquals(createStringSet("development"), getGroupIds(groups));
 
     List<User> users = identityService.createUserQuery().memberOfGroup("sales").list();

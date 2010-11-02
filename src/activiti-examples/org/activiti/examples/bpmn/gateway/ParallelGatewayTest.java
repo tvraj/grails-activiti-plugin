@@ -31,7 +31,8 @@ public class ParallelGatewayTest {
   @Rule public ActivitiRule activitiRule = new ActivitiRule();
   
   @Deployment
-  @Test public void testForkJoin() {
+  @Test
+  public void testForkJoin() {
 
     RuntimeService runtimeService = activitiRule.getRuntimeService();
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("forkJoin");
@@ -39,7 +40,7 @@ public class ParallelGatewayTest {
     TaskQuery query = taskService
                         .createTaskQuery()
                         .processInstanceId(pi.getId())
-                        .orderByName()
+                        .orderByTaskName()
                         .asc();
 
     List<Task> tasks = query.list();
@@ -59,16 +60,16 @@ public class ParallelGatewayTest {
     assertEquals("Archive Order", tasks.get(0).getName());
   }
 
-  
   @Deployment
-  @Test public void testUnbalancedForkJoin() {
+  @Test
+  public void testUnbalancedForkJoin() {
     
     RuntimeService runtimeService = activitiRule.getRuntimeService();
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("UnbalancedForkJoin");
     TaskService taskService = activitiRule.getTaskService();
     TaskQuery query = taskService.createTaskQuery()
                                  .processInstanceId(pi.getId())
-                                 .orderByName()
+                                 .orderByTaskName()
                                  .asc();
     
     List<Task> tasks = query.list(); 
@@ -97,10 +98,10 @@ public class ParallelGatewayTest {
     taskService.complete(task4.getId());
     
     assertNull("Process ended", activitiRule
-    	      .getRuntimeService()
-    	      .createProcessInstanceQuery()
-    	      .processInstanceId(pi.getId())
-    	      .singleResult());
+               .getRuntimeService()
+               .createProcessInstanceQuery()
+               .processInstanceId(pi.getId())
+               .singleResult());
   }
   
 }

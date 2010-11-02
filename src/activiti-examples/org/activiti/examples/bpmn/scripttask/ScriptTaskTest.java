@@ -31,7 +31,7 @@ public class ScriptTaskTest {
   @Rule public ActivitiRule activitiRule = new ActivitiRule();
 
   @Deployment
-  @Test 
+  @Test
   public void testScriptExecution() {
     int[] inputArray = new int[] {1, 2, 3, 4, 5};
     RuntimeService runtimeService = activitiRule.getRuntimeService();
@@ -42,7 +42,7 @@ public class ScriptTaskTest {
   }
 
   @Deployment
-  @Test 
+  @Test
   public void testSetVariableThroughExecutionInScript() {
     RuntimeService runtimeService = activitiRule.getRuntimeService();
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("setScriptVariableThroughExecution");
@@ -54,7 +54,7 @@ public class ScriptTaskTest {
   }
 
   @Deployment
-  @Test 
+  @Test
   public void testSetScriptResultToProcessVariable() {
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("echo", "hello");
@@ -66,4 +66,5 @@ public class ScriptTaskTest {
     assertEquals("hello", runtimeService.getVariable(pi.getId(), "existingProcessVariableName"));
     assertEquals("hello", runtimeService.getVariable(pi.getId(), "newProcessVariableName"));
   }
+
 }

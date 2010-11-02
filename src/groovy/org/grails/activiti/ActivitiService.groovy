@@ -30,6 +30,7 @@ class ActivitiService {
 	def runtimeService
 	def taskService
 	def identityService
+	def formService
 	
 	def startProcess(Map params) {
 		runtimeService.startProcessInstanceByKey(params.controller, params)
@@ -42,7 +43,7 @@ class ActivitiService {
 		}
 		if (orderBy) {
 			orderBy.each { k, v ->
-				taskQuery."orderBy${GrailsNameUtils.getClassNameRepresentation(k == 'id'?'taskId':k)}"()."${v}"()
+				taskQuery."orderByTask${GrailsNameUtils.getClassNameRepresentation(k)}"()."${v}"()
 			}
 		}			
 		taskQuery.listPage(firstResult, maxResults)
@@ -57,11 +58,11 @@ class ActivitiService {
 	} 
 	
 	def getAssignedTasksCount(String username) {
-		getTasksCount("assignee", username)
+		getTasksCount("taskAssignee", username)
 	}
 	
 	def getUnassignedTasksCount(String username) {
-		getTasksCount("candidateUser", username)
+		getTasksCount("taskCandidateUser", username)
 	}
 	
 	def getAllTasksCount() {
@@ -73,7 +74,7 @@ class ActivitiService {
 		if (params.sort) {
 			orderBy << ["${params.sort}":params.order]
 		}
-		findTasks("assignee", params.username, getOffset(params.offset), params.max, orderBy)
+		findTasks("taskAssignee", params.username, getOffset(params.offset), params.max, orderBy)
 	}
 	
 	def findUnassignedTasks(Map params) {
@@ -81,7 +82,7 @@ class ActivitiService {
 		if (params.sort) {
 			orderBy << ["${params.sort}":params.order]
 		}
-		findTasks("candidateUser", params.username, getOffset(params.offset), params.max, orderBy)
+		findTasks("taskCandidateUser", params.username, getOffset(params.offset), params.max, orderBy)
 	}		
 	
 	def findAllTasks(Map params) {
@@ -121,11 +122,11 @@ class ActivitiService {
 	}	   
 	
 	Task getAssignedTask(String username, String processInstanceId) {
-		getTask("assignee", username, processInstanceId)
+		getTask("taskAssignee", username, processInstanceId)
 	}
 	
 	Task getUnassignedTask(String username, String processInstanceId) {
-		getTask("candidateUser", username, processInstanceId)
+		getTask("taskCandidateUser", username, processInstanceId)
 	}	
 	
 	private getTask(String methodName, String username, String processInstanceId) {
@@ -165,8 +166,8 @@ class ActivitiService {
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult()
 		String taskFormUri = runtimeService.getVariable(task.executionId, "uri")
 		if (!taskFormUri) {
-			def id = getDomainObjectId(task)?:""
-			taskFormUri = "${task.formResourceKey}/${id}"
+			def id = getDomainObjectId(task)?:"" 
+			taskFormUri = "${formService.getTaskFormData(taskId).formKey}/${id}"
 		}
 		if (taskFormUri) {
 			taskFormUri += "?taskId=${taskId}"
@@ -189,7 +190,7 @@ class ActivitiService {
 			if (identityLink.groupId) {
 			    userIds << identityService.createUserQuery()
 					           .memberOfGroup(identityLink.groupId)
-								     .orderById().asc().list().collect { it.id }
+								     .orderByUserId().asc().list().collect { it.id }
 			} else {
 			    userIds << identityLink.userId
 			}

@@ -15,19 +15,18 @@
 
 <definitions id="definitions"
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:activiti="http://activiti.org/bpmn-extensions"
-  targetNamespace="http://www.activiti.org/bpmn2.0">
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
   
   <process id="setScriptResultToProcessVariable">
   
     <startEvent id="theStart" />
 
-    <scriptTask id="theScriptTaskWithExistingProcessVariableName" scriptFormat="juel" activiti:result-variable-name="existingProcessVariableName">
+    <scriptTask id="theScriptTaskWithExistingProcessVariableName" scriptFormat="juel" activiti:resultVariableName="existingProcessVariableName">
       <script>#{echo}</script>
     </scriptTask>
 
-    <scriptTask id="theScriptTaskWithNewProcessVariableName" scriptFormat="juel" activiti:result-variable-name="newProcessVariableName">
+    <scriptTask id="theScriptTaskWithNewProcessVariableName" scriptFormat="juel" activiti:resultVariableName="newProcessVariableName">
       <script>#{echo}</script>
     </scriptTask>
 

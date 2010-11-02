@@ -24,66 +24,87 @@
   * 
  */
 import grails.util.BuildSettingsHolder as build
+import groovy.xml.MarkupBuilder
  
 includeTargets << grailsScript("_GrailsPackage")
+
+CONFIG_FILE = "activiti.cfg.xml"
 
 eventTestPhasesStart = {
 	ant.echo "eventTestPhasesStart invoked."
 	ensureAllGeneratedFilesDeleted()	  
-	createActivitiPropertiesFile(build.settings.resourcesDir.toString())
+	createActivitiConfigFile(build.settings.resourcesDir.toString())
 }
 
 eventTestPhasesEnd = {
-    ant.echo "eventTestPhasesEnd invoked."
-	ant.delete file:"${build.settings.resourcesDir}/activiti.properties" 
+  ant.echo "eventTestPhasesEnd invoked."
+	ant.delete file:"${build.settings.resourcesDir}/${CONFIG_FILE}" 
 }
 
 eventDeployBarStart = { 
 	ant.echo "eventDeployBarStart invoked."
 	ensureAllGeneratedFilesDeleted()
-    createActivitiPropertiesFile("${activitiPluginDir}/grails-app/conf")
+  createActivitiConfigFile("${activitiPluginDir}/grails-app/conf")
 }
  
 eventDeployBarEnd = { 
 	ant.echo "eventDeployBarEnd invoked."
-	ant.delete file:"${activitiPluginDir}/grails-app/conf/activiti.properties" 
+	ant.delete file:"${activitiPluginDir}/grails-app/conf/${CONFIG_FILE}" 
 }
 
 private void ensureAllGeneratedFilesDeleted() {
-	if (new File("${build.settings.resourcesDir}/activiti.properties").exists()) {
-		  ant.delete file:"${build.settings.resourcesDir}/activiti.properties" 
+	if (new File("${build.settings.resourcesDir}/${CONFIG_FILE}").exists()) {
+		  ant.delete file:"${build.settings.resourcesDir}/${CONFIG_FILE}" 
 	}
-	if (new File("${activitiPluginDir}/grails-app/conf/activiti.properties").exists()) {
-		  ant.delete file:"${activitiPluginDir}/grails-app/conf/activiti.properties" 
+	if (new File("${activitiPluginDir}/grails-app/conf/${CONFIG_FILE}").exists()) {
+		  ant.delete file:"${activitiPluginDir}/grails-app/conf/${CONFIG_FILE}" 
 	}	
 }
 
-private void createActivitiPropertiesFile(String activitiPropertiesFilePath) {
+private void createActivitiConfigFile(String activitiConfigFilePath) {
 	createConfig()
-	def activitiPropertiesFile = new File(activitiPropertiesFilePath, "activiti.properties")
-	activitiPropertiesFile.withWriter {
-		it.writeLine """database=${config.activiti.dataBaseName}
-jdbc.driver=${config.dataSource.driverClassName}
-jdbc.url=${config.dataSource.url}
-jdbc.username=${config.dataSource.username}
-jdbc.password=${config.dataSource.password}
-db.schema.strategy=${config.activiti.dbSchemaStrategy?:"create-drop"}
-job.executor.auto.activate=${config.activiti.jobExecutorAutoActivate}
-mail.smtp.host=${config.activiti.mailServerHost}
-mail.smtp.port=${config.activiti.mailServerPort}
-mail.smtp.user=${config.activiti.mailServerUserName}
-mail.smtp.password=${config.activiti.mailServerPassword}
-mail.default.from=${config.activiti.mailServerDefaultFromAddress}
-"""
-	  }
-	 ant.echo "Content of generated activiti.properties file:"
-	 ant.echo activitiPropertiesFile.text
+	def activitiConfigFile = new File(activitiConfigFilePath, CONFIG_FILE)
+	def writer = activitiConfigFile.newWriter()
+	new MarkupBuilder(writer)."activiti-cfg"("process-engine-name":config.activiti.processEngineName) {
+		database(type:config.activiti.databaseType, "schema-strategy": config.activiti.dbSchemaStrategy?:"create-drop") {
+       jdbc(url:config.dataSource.url,
+          driver:config.dataSource.driverClassName,
+          username:config.dataSource.username,
+          password:config.dataSource.password)
+		}
+		"job-executor"(activate:config.activiti.jobExecutorActivate)
+		if (config.activiti.mailServerUsername) {
+		mail(server:config.activiti.mailServerHost, 
+			   port:config.activiti.mailServerPort,
+				 username:config.activiti.mailServerUsername,
+				 password:config.activiti.mailServerPassword,
+				"default-from":config.activiti.mailServerDefaultFromAddress)
+		} else {
+		mail(server:config.activiti.mailServerHost, 
+			   port:config.activiti.mailServerPort,
+				"default-from":config.activiti.mailServerDefaultFromAddress)		
+		}
+	}
+	writer.flush()
+	ant.echo "Content of generated ${activitiConfigFile.absolutePath} file:"
+  println activitiConfigFile.text
 }	
 
 eventCreateWarStart = {warname, stagingDir ->
   if (grailsEnv == "production") {
       ant.echo "Remove unnecessary JAR files..."
-      ant.delete file:"${stagingDir}/WEB-INF/lib/subethasmtp-smtp-1.2.jar"
-		  ant.delete file:"${stagingDir}/WEB-INF/lib/subethasmtp-wiser-1.2.jar"
+	  ["subethasmtp-smtp-1.2.jar", 
+		  "subethasmtp-wiser-1.2.jar", 
+		  "geronimo-jms_1.1_spec-1.0.1.jar",
+		  "geronimo-jpa_3.0_spec-1.0.jar",
+		  "geronimo-jta_1.1_spec-1.1.jar",
+		  "mockito-core-1.8.2.jar",
+		  "objenesis-1.0.jar",
+		  "openjpa-1.2.2.jar",
+		  "persistence-api-1.0.jar",
+		  "serp-1.13.1.jar"
+		 ].each { jar ->
+      ant.delete file:"${stagingDir}/WEB-INF/lib/$jar"
+      }
     }
 }

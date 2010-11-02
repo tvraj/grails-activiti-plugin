@@ -18,7 +18,6 @@ import org.activiti.engine.test.ActivitiRule;
 import org.activiti.engine.*;
 import org.junit.*;
 import static org.junit.Assert.*;
-
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -33,7 +32,7 @@ public class TaskAssigneeTest {
   @Rule public ActivitiRule activitiRule = new ActivitiRule();
 
   @Deployment
-  @Test 
+  @Test
   public void testTaskAssignee() {    
     
     // Start process instance
@@ -44,7 +43,7 @@ public class TaskAssigneeTest {
     TaskService taskService = activitiRule.getTaskService();
     List<Task> tasks = taskService
       .createTaskQuery()
-      .assignee("kermit")
+      .taskAssignee("kermit")
       .list();
     assertEquals(1, tasks.size());
     Task myTask = tasks.get(0);
@@ -55,10 +54,10 @@ public class TaskAssigneeTest {
     taskService.complete(myTask.getId());
     // assert if the process instance completed
     assertNull("Process ended", activitiRule
-  	      .getRuntimeService()
-  	      .createProcessInstanceQuery()
-  	      .processInstanceId(processInstance.getId())
-  	      .singleResult());
+               .getRuntimeService()
+               .createProcessInstanceQuery()
+               .processInstanceId(processInstance.getId())
+               .singleResult());
   }
 
 }
