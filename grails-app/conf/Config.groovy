@@ -60,7 +60,7 @@ activiti {
 	  mailServerDefaultFromAddress = "username@yourserver.com"
 	  historyLevel = "audit" // "none", "activity", "audit" or "full"
 	  sessionUsernameKey = "username"
-	  useFormKey = false
+	  useFormKey = true
 }
 
 environments {
