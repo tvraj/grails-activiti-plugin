@@ -37,5 +37,5 @@ class ActivitiConstants {
 	static final String PLUGIN_AUTO_DEPLOYMENT_NAME = "ActivitiPluginAutoDeploy"
 	static final String DEFAULT_SESSION_USERNAME_KEY = "username"
 	static final String DEFAULT_HISTORY_LEVEL = "audit"
-	static final Boolean DEFAULT_USE_FORM_KEY = false
+	static final boolean DEFAULT_USE_FORM_KEY = false
 }

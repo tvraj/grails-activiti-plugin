@@ -60,8 +60,8 @@ class ActivitiGrailsPlugin {
     def observe = ["controllers"]
 	  
     String sessionUsernameKey = CH.config.activiti.sessionUsernameKey?:ActivitiConstants.DEFAULT_SESSION_USERNAME_KEY
-    Boolean useFormKey = CH.config.activiti.useFormKey?:ActivitiConstants.DEFAULT_USE_FORM_KEY
-        
+    boolean useFormKey = CH.config.activiti.useFormKey?:ActivitiConstants.DEFAULT_USE_FORM_KEY
+
     def doWithWebDescriptor = { xml ->
         // TODO Implement additions to web.xml (optional), this event occurs before 
     }
@@ -82,23 +82,22 @@ class ActivitiGrailsPlugin {
             mailServerUsername = CH.config.activiti.mailServerUsername?:ActivitiConstants.DEFAULT_MAIL_SERVER_USERNAME
             mailServerPassword = CH.config.activiti.mailServerPassword?:ActivitiConstants.DEFAULT_MAIL_SERVER_PASSWORD
             mailServerDefaultFromAddress = CH.config.activiti.mailServerDefaultFromAddress?:ActivitiConstants.DEFAULT_MAIL_SERVER_FROM_ADDRESS
-			      historyLevel = CH.config.activiti.historyLevel?:ActivitiConstants.DEFAULT_HISTORY_LEVEL
             dataSource = ref("dataSource")
             transactionManager = ref("transactionManager")
         }
     	runtimeService(processEngine:"getRuntimeService") 
-      repositoryService(processEngine:"getRepositoryService")
+        repositoryService(processEngine:"getRepositoryService")
     	taskService(processEngine:"getTaskService") 
     	managementService(processEngine:"getManagementService") 
     	identityService(processEngine:"getIdentityService")
     	historyService(processEngine:"getHistoryService")
-		  formService(processEngine:"getFormService")
+        formService(processEngine:"getFormService")
 		
-      activitiService(org.grails.activiti.ActivitiService) {
+        activitiService(org.grails.activiti.ActivitiService) {
             runtimeService = ref("runtimeService")
             taskService = ref("taskService")
             identityService = ref("identityService")
-			      formService = ref("formService")
+            formService = ref("formService")
         }
     }
 
@@ -120,19 +119,19 @@ class ActivitiGrailsPlugin {
                 ProcessInstance pi = startProcess(params)
                 Task task = getUnassignedTask(session[sessionUsernameKey], pi.id)
                 claimTask(task.id, session[sessionUsernameKey])
-                redirect uri:getTaskFormUri(task.id)
+                redirect uri:getTaskFormUri(task.id, useFormKey)
             }
         }
 				
         controllerClass.metaClass.startTask = { String taskId ->
             activitiService.with {
                 claimTask(taskId, session[sessionUsernameKey])
-                redirect uri:getTaskFormUri(taskId)
+                redirect uri:getTaskFormUri(taskId, useFormKey)
             }
         }
 							
         controllerClass.metaClass.getForm = { String taskId ->
-            redirect uri:activitiService.getTaskFormUri(taskId)
+            redirect uri:activitiService.getTaskFormUri(taskId, useFormKey)
         }
 				
         controllerClass.metaClass.saveTask = { Map params ->

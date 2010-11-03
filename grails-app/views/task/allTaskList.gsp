@@ -53,10 +53,11 @@
                             <g:sortableColumn property="name" title="${message(code: 'task.name.label', default: 'Name')}" />
                         
                             <g:sortableColumn property="description" title="${message(code: 'task.description.label', default: 'Description')}" />
-                            <th>Create Time</th>
+                           
                             <g:sortableColumn property="priority" title="${message(code: 'task.priority.label', default: 'Priority')}" />
                         
                             <g:sortableColumn property="assignee" title="${message(code: 'task.assignee.label', default: 'Assignee')}" />
+      											<th>Create Time</th>
       											<th>Action</th>                                          
                         </tr>
                     </thead>
@@ -69,8 +70,6 @@
                             <td>${fieldValue(bean: taskInstance, field: "name")}</td>
                         
                             <td>${fieldValue(bean: taskInstance, field: "description")}</td>
-                            
-                            <td><g:formatDate date="${taskInstance.createTime}" /></td>
                         
                             <td>
 							                <g:form action="changePriority">
@@ -97,7 +96,9 @@
 							                		onchange="this.form.submit();" value="${taskInstance.assignee}"/>	
 							                </g:form>
                             </td>
-                    
+                           
+                           <td><g:formatDate date="${taskInstance.createTime}" /></td>
+                           
                            <td>
                              		<g:form action="deleteTask" onsubmit="return confirmDelete();">
                              				<g:hiddenField name="taskId" value="${taskInstance.id}" />

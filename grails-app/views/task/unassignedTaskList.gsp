@@ -53,6 +53,8 @@
                         
                             <g:sortableColumn property="priority" title="${message(code: 'task.priority.label', default: 'Priority')}" />
                         
+      											<th>Create Time</th>
+      											
       											<th colspan="2">Action</th>                                          
                         </tr>
                     </thead>
@@ -68,6 +70,8 @@
                         
                             <td>${fieldValue(bean: taskInstance, field: "priority")}</td>
                         
+                            <td><g:formatDate date="${taskInstance.createTime}" /></td>
+                            
                             <td>
                              		<g:form action="claimTask" >
                              				<g:hiddenField name="taskId" value="${taskInstance.id}" />

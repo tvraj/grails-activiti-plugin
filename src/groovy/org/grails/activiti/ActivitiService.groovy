@@ -162,12 +162,22 @@ class ActivitiService {
 		}
 	}						
 	
-	String getTaskFormUri(String taskId) {
+	String getTaskFormUri(String taskId, boolean useFormKey) {
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult()
 		String taskFormUri = runtimeService.getVariable(task.executionId, "uri")
 		if (!taskFormUri) {
 			def id = getDomainObjectId(task)?:"" 
-			taskFormUri = "${formService.getTaskFormData(taskId).formKey}/${id}"
+			
+			if (useFormKey) {
+				String formKey = formService.getTaskFormData(taskId).formKey
+				if (formKey) {
+			    taskFormUri = "${formKey}/${id}"
+				} else {
+				  taskFormUri = "/${runtimeService.getVariable(task.executionId, 'controller')}/${task.taskDefinitionKey}/${id}"
+				}
+			} else {
+			  taskFormUri = "/${runtimeService.getVariable(task.executionId, 'controller')}/${task.taskDefinitionKey}/${id}"
+			}
 		}
 		if (taskFormUri) {
 			taskFormUri += "?taskId=${taskId}"

@@ -52,7 +52,9 @@
                             <g:sortableColumn property="description" title="${message(code: 'task.description.label', default: 'Description')}" />
                         
                             <g:sortableColumn property="priority" title="${message(code: 'task.priority.label', default: 'Priority')}" />
-                        
+                            
+                            <th>Create Time</th>
+      											
       											<th>Action</th>                                          
                         </tr>
                     </thead>
@@ -67,7 +69,9 @@
                             <td>${fieldValue(bean: taskInstance, field: "description")}</td>
                         
                             <td>${fieldValue(bean: taskInstance, field: "priority")}</td>
-                                            
+                            
+                            <td><g:formatDate date="${taskInstance.createTime}" /></td>
+                            
                             <td>
                              		<g:form action="revokeTask" >
                              				<g:hiddenField name="taskId" value="${taskInstance.id}" />
