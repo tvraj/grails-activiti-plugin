@@ -24,6 +24,7 @@
  */
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
+import grails.util.BuildSettingsHolder as build
 
 includeTargets << grailsScript("Init")
 includeTargets << grailsScript("Compile")
@@ -38,9 +39,10 @@ target(deploy: "Deploy Activiti Business Archive (BAR) and JAR") {
 	depends(clean, compile, createBar)
 	event("DeployBarStart", [])
 	rootLoader.addURL(new File("${activitiPluginDir}/grails-app/conf").toURL())
+	rootLoader.addURL(build.settings.classesDir.toURL())
 	ant.taskdef (name: 'deployBar', classname : "org.activiti.engine.impl.ant.DeployBarTask")
 	try {
-		ant.deployBar (file: "${basedir}/target/${appName}-${appVersion}.bar")
+		ant.deployBar (processEngineName:config.activiti.processEngineName, file: "${basedir}/target/${appName}-${appVersion}.bar")
 	} catch (Exception e) {
 		e.printStackTrace()
 	} finally {
