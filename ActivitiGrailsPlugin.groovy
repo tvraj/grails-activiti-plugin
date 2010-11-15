@@ -115,7 +115,7 @@ class ActivitiGrailsPlugin {
     def addActivitiMethods(controllerClass) {
         controllerClass.metaClass.start = { Map params ->
             activitiService.with {
-                params.username = session[sessionUsernameKey]
+                params[sessionUsernameKey] = session[sessionUsernameKey]
                 ProcessInstance pi = startProcess(params)
                 Task task = getUnassignedTask(session[sessionUsernameKey], pi.id)
                 claimTask(task.id, session[sessionUsernameKey])
@@ -185,7 +185,7 @@ class ActivitiGrailsPlugin {
         }
 				
         controllerClass.metaClass.findUnassignedTasks = { Map params ->
-            params.username=session[sessionUsernameKey]
+            params[sessionUsernameKey] = session[sessionUsernameKey]
             if (!params.sort) {
                 params.sort = "id"
                 params.order = "desc"
@@ -194,7 +194,7 @@ class ActivitiGrailsPlugin {
         }
 				
         controllerClass.metaClass.findAssignedTasks = { Map params ->
-            params.username=session[sessionUsernameKey]
+            params[sessionUsernameKey] = session[sessionUsernameKey]
             if (!params.sort) {
                 params.sort = "id"
                 params.order = "desc"

@@ -31,6 +31,7 @@ class ActivitiService {
 	def taskService
 	def identityService
 	def formService
+	String sessionUsernameKey = CH.config.activiti.sessionUsernameKey?:ActivitiConstants.DEFAULT_SESSION_USERNAME_KEY
 	
 	def startProcess(Map params) {
 		runtimeService.startProcessInstanceByKey(params.controller, params)
@@ -74,7 +75,7 @@ class ActivitiService {
 		if (params.sort) {
 			orderBy << ["${params.sort}":params.order]
 		}
-		findTasks("taskAssignee", params.username, getOffset(params.offset), params.max, orderBy)
+		findTasks("taskAssignee", params[sessionUsernameKey], getOffset(params.offset), params.max, orderBy)
 	}
 	
 	def findUnassignedTasks(Map params) {
@@ -82,7 +83,7 @@ class ActivitiService {
 		if (params.sort) {
 			orderBy << ["${params.sort}":params.order]
 		}
-		findTasks("taskCandidateUser", params.username, getOffset(params.offset), params.max, orderBy)
+		findTasks("taskCandidateUser", params[sessionUsernameKey], getOffset(params.offset), params.max, orderBy)
 	}		
 	
 	def findAllTasks(Map params) {
