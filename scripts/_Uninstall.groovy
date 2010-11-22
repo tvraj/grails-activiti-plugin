@@ -24,8 +24,10 @@
  // Restore backup files
 if (new File("${basedir}/grails-app/views/index.bak").exists())
 	ant.move file:"${basedir}/grails-app/views/index.bak", tofile:"${basedir}/grails-app/views/index.gsp"
-if (new File("${basedir}/grails-app/views/layouts/main.bak").exists())
-	ant.move file:"${basedir}/grails-app/views/layouts/main.bak", tofile:"${basedir}/grails-app/views/layouts/main.gsp"
+if (new File("${basedir}/web-app/images/grails_logo.png.bak").exists())
+	ant.move file:"${basedir}/web-app/images/grails_logo.png.bak", tofile:"${basedir}/web-app/images/grails_logo.png"
+if (new File("${basedir}/web-app/images/favicon.ico.bak").exists())
+	ant.move file:"${basedir}/web-app/images/favicon.ico.bak", tofile:"${basedir}/web-app/images/favicon.ico"
 
 // Delete plugin related files
 ant.delete file:"${basedir}/web-app/images/grails_activiti_logo.png"

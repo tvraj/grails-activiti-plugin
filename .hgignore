@@ -3,3 +3,7 @@ syntax: regexp
 ^target$
 syntax: regexp
 ^bak$
+syntax: regexp
+^grails-activiti-5\.0\.rc1\.zip$
+syntax: regexp
+^plugin\.xml$

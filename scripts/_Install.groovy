@@ -1,4 +1,4 @@
-/* Copyright 2006-2010 the original author or authors.
+/* Copyright 2010 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,14 +24,15 @@
 ant.mkdir(dir:"${basedir}/src/taskforms")
 
 // Backup existing files
-ant.move file:"${basedir}/grails-app/views/index.gsp", tofile:"${basedir}/grails-app/views/index.bak"
-ant.move file:"${basedir}/grails-app/views/layouts/main.gsp", tofile:"${basedir}/grails-app/views/layouts/main.bak"
+if (new File("${basedir}/grails-app/views/index.gsp").exists())
+  ant.move file:"${basedir}/grails-app/views/index.gsp", tofile:"${basedir}/grails-app/views/index.bak"
+ant.move file:"${basedir}/web-app/images/grails_logo.png", tofile:"${basedir}/web-app/images/grails_logo.png.bak"
+ant.move file:"${basedir}/web-app/images/favicon.ico", tofile:"${basedir}/web-app/images/favicon.ico.bak"
 
-// Copy plugin related files
-ant.copy file:"${pluginBasedir}/grails-app/views/index.gsp", todir:"${basedir}/grails-app/views"
-ant.copy file:"${pluginBasedir}/grails-app/views/layouts/main.gsp", todir:"${basedir}/grails-app/views/layouts"
-ant.copy file:"${pluginBasedir}/web-app/images/grails_activiti_logo.png", todir:"${basedir}/web-app/images"
-ant.copy file:"${pluginBasedir}/web-app/images/grails_activiti_favicon.ico", todir:"${basedir}/web-app/images"
+// Move plugin related files
+ant.move file:"${pluginBasedir}/grails-app/views/index.gsp", todir:"${basedir}/grails-app/views"
+ant.move file:"${pluginBasedir}/web-app/images/grails_activiti_logo.png", tofile:"${basedir}/web-app/images/grails_logo.png"
+ant.move file:"${pluginBasedir}/web-app/images/grails_activiti_favicon.ico", tofile:"${basedir}/web-app/images/favicon.ico"
 
 updateConfig()
 
