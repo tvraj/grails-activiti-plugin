@@ -24,7 +24,16 @@ class VacationRequestBootStrap {
 		def identityService
 		
      def init = { servletContext ->
-				environments {
+		 /* If you are sending email using gmail, you need to uncomment this code block 
+			  ["mail.smtp.auth":"true",
+				 "mail.smtp.socketFactory.port":"465",
+				 "mail.smtp.socketFactory.class":"javax.net.ssl.SSLSocketFactory",
+				 "mail.smtp.socketFactory.fallback":"false",
+				 "mail.smtp.starttls.required": "true"].each { k, v ->
+			     System.setProperty k, v
+		         }
+		    */    
+				environments {			
 					production {
 						createUsersAndGroups()
 					}

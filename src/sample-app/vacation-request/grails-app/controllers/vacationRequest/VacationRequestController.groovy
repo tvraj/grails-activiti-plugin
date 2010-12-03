@@ -107,7 +107,9 @@ class VacationRequestController {
                 if (params.complete) {
 										params.id = vacationRequestInstance.id
 										params.vacationApproved = vacationRequestInstance.approvalStatus == ApprovalStatus.APPROVED
-										params.emailTo = vacationRequestInstance.employeeName
+										params.from = grailsApplication.config.activiti.mailServerDefaultFrom
+										params.emailTo = grailsApplication.config.activiti.mailServerDefaultFrom
+										params.approvalRemark = params.approvalRemark && params.approvalRemark != "" ? params.approvalRemark : "No Approval Remark."
 		                completeTask(params)
 								} else {
 										params.action="approval"
