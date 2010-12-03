@@ -57,7 +57,9 @@
                             <g:sortableColumn property="priority" title="${message(code: 'task.priority.label', default: 'Priority')}" />
                         
                             <g:sortableColumn property="assignee" title="${message(code: 'task.assignee.label', default: 'Assignee')}" />
-      											<th>Create Time</th>
+                            
+      											<g:sortableColumn property="createTime" title="${message(code: 'task.createTime.label', default: 'Create Time')}" />
+      											
       											<th>Action</th>                                          
                         </tr>
                     </thead>

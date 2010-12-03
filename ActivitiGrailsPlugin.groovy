@@ -192,7 +192,7 @@ class ActivitiGrailsPlugin {
         controllerClass.metaClass.findUnassignedTasks = { Map params ->
             params[sessionUsernameKey] = session[sessionUsernameKey]
             if (!params.sort) {
-                params.sort = "id"
+                params.sort = "createTime"
                 params.order = "desc"
             }
             activitiService.findUnassignedTasks(params)
@@ -201,7 +201,7 @@ class ActivitiGrailsPlugin {
         controllerClass.metaClass.findAssignedTasks = { Map params ->
             params[sessionUsernameKey] = session[sessionUsernameKey]
             if (!params.sort) {
-                params.sort = "id"
+                params.sort = "createTime"
                 params.order = "desc"
             }
             activitiService.findAssignedTasks(params)
@@ -209,7 +209,7 @@ class ActivitiGrailsPlugin {
 				
         controllerClass.metaClass.findAllTasks = { Map params ->
             if (!params.sort) {
-                params.sort = "id"
+                params.sort = "createTime"
                 params.order = "desc"
             }
             activitiService.findAllTasks(params)
