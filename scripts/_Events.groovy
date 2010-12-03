@@ -33,7 +33,7 @@ CONFIG_FILE = "activiti.cfg.xml"
 eventTestPhasesStart = {
 	ant.echo "eventTestPhasesStart invoked."
 	ensureAllGeneratedFilesDeleted()	  
-	createActivitiConfigFile(build.settings.resourcesDir.toString())
+	createActivitiConfigFile(build.settings.resourcesDir.toString(), true)
 }
 
 eventTestPhasesEnd = { 
@@ -52,7 +52,7 @@ eventTestPhaseStart = { phase ->
 eventDeployBarStart = { 
 	ant.echo "eventDeployBarStart invoked."
 	ensureAllGeneratedFilesDeleted()
-  createActivitiConfigFile("${activitiPluginDir}/grails-app/conf")
+  createActivitiConfigFile("${activitiPluginDir}/grails-app/conf", false)
 }
  
 eventDeployBarEnd = { 
@@ -69,19 +69,20 @@ private void ensureAllGeneratedFilesDeleted() {
 	}	
 }
 
-private void createActivitiConfigFile(String activitiConfigFilePath) {
+private void createActivitiConfigFile(String activitiConfigFilePath, boolean isTestEnv) {
 	createConfig()
-	// org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration
+	String processEngineConfigurationClassName = isTestEnv ? "org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration" : "org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration"
 	def activitiConfigFile = new File(activitiConfigFilePath, CONFIG_FILE)
 	activitiConfigFile.withWriter {
 		it.writeLine """<?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans" 
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-  <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
+  <bean id="processEngineConfiguration" class="${processEngineConfigurationClassName}">
   
+    <property name="processEngineName" value="${config.activiti.processEngineName}" />
     <property name="databaseType" value="${config.activiti.databaseType}" />
     <property name="jdbcUrl" value="${config.dataSource.url}" />
     <property name="jdbcDriver" value="${config.dataSource.driverClassName}" />
