@@ -36,9 +36,16 @@ eventTestPhasesStart = {
 	createActivitiConfigFile(build.settings.resourcesDir.toString())
 }
 
-eventTestPhasesEnd = {
+eventTestPhasesEnd = { 
   ant.echo "eventTestPhasesEnd invoked."
 	ant.delete file:"${build.settings.resourcesDir}/${CONFIG_FILE}" 
+}
+
+eventTestPhaseStart = { phase ->
+	ant.echo "eventTestPhaseStart invoked. phase = $phase"
+	if (phase == 'unit') {
+		rootLoader.addURL new File("${build.settings.testClassesDir.absolutePath}/${phase}").toURL()
+	}
 }
 
 eventDeployBarStart = { 
@@ -64,28 +71,34 @@ private void ensureAllGeneratedFilesDeleted() {
 private void createActivitiConfigFile(String activitiConfigFilePath) {
 	createConfig()
 	def activitiConfigFile = new File(activitiConfigFilePath, CONFIG_FILE)
-	def writer = activitiConfigFile.newWriter()
-	new MarkupBuilder(writer)."activiti-cfg"("process-engine-name":config.activiti.processEngineName) {
-		database(type:config.activiti.databaseType, "schema-strategy": config.activiti.dbSchemaStrategy?:"create-drop") {
-       jdbc(url:config.dataSource.url,
-          driver:config.dataSource.driverClassName,
-          username:config.dataSource.username,
-          password:config.dataSource.password)
-		}
-		"job-executor"(activate:config.activiti.jobExecutorActivate)
-		if (config.activiti.mailServerUsername) {
-		mail(server:config.activiti.mailServerHost, 
-			   port:config.activiti.mailServerPort,
-				 username:config.activiti.mailServerUsername,
-				 password:config.activiti.mailServerPassword,
-				"default-from":config.activiti.mailServerDefaultFromAddress)
-		} else {
-		mail(server:config.activiti.mailServerHost, 
-			   port:config.activiti.mailServerPort,
-				"default-from":config.activiti.mailServerDefaultFromAddress)		
-		}
+	activitiConfigFile.withWriter {
+		it.writeLine """<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
+  
+    <property name="databaseType" value="${config.activiti.databaseType}" />
+    <property name="jdbcUrl" value="${config.dataSource.url}" />
+    <property name="jdbcDriver" value="${config.dataSource.driverClassName}" />
+    <property name="jdbcUsername" value="${config.dataSource.username}" />
+    <property name="jdbcPassword" value="${config.dataSource.password}" />
+    
+    <!-- Database configurations -->
+    <property name="databaseSchemaUpdate" value="${config.activiti.databaseSchemaUpdate}" />
+    
+    <!-- job executor configurations -->
+    <property name="jobExecutorActivate" value="${config.activiti.jobExecutorActivate}" />
+    
+    <!-- mail server configurations -->
+    <property name="mailServerPort" value="${config.activiti.mailServerPort}" />    
+  </bean>
+
+</beans>	
+"""
 	}
-	writer.flush()
 	ant.echo "Content of generated ${activitiConfigFile.absolutePath} file:"
   println activitiConfigFile.text
 }	
@@ -95,14 +108,11 @@ eventCreateWarStart = {warname, stagingDir ->
       ant.echo "Remove unnecessary JAR files..."
 	  ["subethasmtp-smtp-1.2.jar", 
 		  "subethasmtp-wiser-1.2.jar", 
-		  "geronimo-jms_1.1_spec-1.0.1.jar",
-		  "geronimo-jpa_3.0_spec-1.0.jar",
-		  "geronimo-jta_1.1_spec-1.1.jar",
+		  "antlr-2.7.7.jar",
+		  "geronimo-jta_1.1_spec-1.1.1.jar",
 		  "mockito-core-1.8.2.jar",
 		  "objenesis-1.0.jar",
-		  "openjpa-1.2.2.jar",
-		  "persistence-api-1.0.jar",
-		  "serp-1.13.1.jar"
+		  "persistence-api-1.0.jar"
 		 ].each { jar ->
       ant.delete file:"${stagingDir}/WEB-INF/lib/$jar"
       }

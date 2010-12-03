@@ -67,21 +67,20 @@ environments {
     development {
         activiti {
 			  processEngineName = "activiti-engine-dev"
-			  dbSchemaStrategy = "create-drop" // "create-drop" or "check-version"	  
+			  databaseSchemaUpdate = true // false, true or "create-drop"	  
         }
     }
     test {
         activiti {
 			  processEngineName = "activiti-engine-test"
-			  dbSchemaStrategy = "create-if-necessary"
-	      mailServerHost = "localhost"
+			  databaseSchemaUpdate = true
 	      mailServerPort = "5025"			  
         }
     }	
     production {
         activiti {
 			  processEngineName = "activiti-engine-prod"
-			  dbSchemaStrategy = "check-version"
+			  databaseSchemaUpdate = false
 			  jobExecutorActivate = true
         }
     }
