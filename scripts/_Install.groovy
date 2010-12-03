@@ -48,13 +48,13 @@ private void updateConfig() {
 	  deploymentResources = ["file:./grails-app/conf/**/*.bpmn*.xml", 
 	                         "file:./grails-app/conf/**/*.png", 
 	                         "file:./src/taskforms/**/*.form"]
-    jobExecutorActivate = false
+	  jobExecutorActivate = false
 	  mailServerHost = "smtp.yourserver.com"
 	  mailServerPort = "25"
 	  mailServerUsername = ""
 	  mailServerPassword = ""
-	  mailServerDefaultFromAddress = "username@yourserver.com"
-	  historyLevel = "audit" // "none", "activity", "audit" or "full"
+	  mailServerDefaultFrom = "username@yourserver.com"
+	  history = "audit" // "none", "activity", "audit" or "full"
 	  sessionUsernameKey = "username"
 	  useFormKey = true
 }
@@ -63,21 +63,20 @@ environments {
     development {
         activiti {
 			  processEngineName = "activiti-engine-dev"
-			  dbSchemaStrategy = "create-drop" // "create-drop" or "check-version"	  
+			  databaseSchemaUpdate = true // true, false or "create-drop"	  
         }
     }
     test {
         activiti {
 			  processEngineName = "activiti-engine-test"
-			  dbSchemaStrategy = "create-if-necessary"
-	      mailServerHost = "localhost"
-	      mailServerPort = "5025"			 			  
+			  databaseSchemaUpdate = true
+	      mailServerPort = "5025"			  
         }
     }	
     production {
         activiti {
 			  processEngineName = "activiti-engine-prod"
-			  dbSchemaStrategy = "check-version"
+			  databaseSchemaUpdate = false
 			  jobExecutorActivate = true
         }
     }

@@ -14,7 +14,7 @@
  */
 package vacationRequest
 
-import org.activiti.engine.delegate.JavaDelegation
+import org.activiti.engine.delegate.JavaDelegate
 import org.activiti.engine.delegate.DelegateExecution
 
  
@@ -24,7 +24,7 @@ import org.activiti.engine.delegate.DelegateExecution
  *
  * @since 5.0.beta2
  */
-class MailSender implements JavaDelegation {
+class MailSender implements JavaDelegate {
   private static String TO = "emailTo";
   
   public void execute(DelegateExecution execution) throws Exception {

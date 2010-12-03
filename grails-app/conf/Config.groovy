@@ -57,8 +57,8 @@ activiti {
 	  mailServerPort = "25"
 	  mailServerUsername = ""
 	  mailServerPassword = ""
-	  mailServerDefaultFromAddress = "username@yourserver.com"
-	  historyLevel = "audit" // "none", "activity", "audit" or "full"
+	  mailServerDefaultFrom = "username@yourserver.com"
+	  history = "audit" // "none", "activity", "audit" or "full"
 	  sessionUsernameKey = "username"
 	  useFormKey = true
 }

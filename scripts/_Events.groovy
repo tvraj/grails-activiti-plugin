@@ -71,6 +71,7 @@ private void ensureAllGeneratedFilesDeleted() {
 
 private void createActivitiConfigFile(String activitiConfigFilePath) {
 	createConfig()
+	// org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration
 	def activitiConfigFile = new File(activitiConfigFilePath, CONFIG_FILE)
 	activitiConfigFile.withWriter {
 		it.writeLine """<?xml version="1.0" encoding="UTF-8"?>
