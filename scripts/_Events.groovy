@@ -44,6 +44,7 @@ eventTestPhasesEnd = {
 eventTestPhaseStart = { phase ->
 	ant.echo "eventTestPhaseStart invoked. phase = $phase"
 	if (phase == 'unit') {
+		ant.mkdir dir:"${build.settings.testClassesDir.absolutePath}/${phase}"
 		rootLoader.addURL new File("${build.settings.testClassesDir.absolutePath}/${phase}").toURL()
 	}
 }
