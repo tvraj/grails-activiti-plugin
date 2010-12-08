@@ -1,4 +1,4 @@
-/* Copyright 2006-2010 the original author or authors.
+/* Copyright 2010 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
  
 includeTargets << grailsScript("Init")
 
-target(main: "Unzip examples-source.jar to test/unit directory") {
+target(main: "Copy Activiti examples to test/unit directory") {
 		ant.copy (todir:"${basedir}/test/unit", overwrite: true) {
 			fileset dir:"${activitiPluginDir}/src/activiti-examples"
 		}							
