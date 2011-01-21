@@ -30,7 +30,7 @@ import org.grails.activiti.ActivitiConstants
  */
 class ActivitiGrailsPlugin {
     // the plugin version
-    def version = "5.1.1"
+    def version = "5.1.2"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.3.3 > *"
     // the other plugins this plugin depends on
@@ -67,43 +67,47 @@ class ActivitiGrailsPlugin {
     }
 
     def doWithSpring = {
-    	println "Activiti Process Engine Initialization..."	
+		  def disabledActiviti = System.getProperty("disabledActiviti")
+		  
+		  if (!disabledActiviti) {
+		    	println "Activiti Process Engine Initialization..."	
+				
+		    	processEngineConfiguration(org.activiti.spring.SpringProcessEngineConfiguration) {
+		            processEngineName = CH.config.activiti.processEngineName?:ActivitiConstants.DEFAULT_PROCESS_ENGINE_NAME
+		            databaseType = CH.config.activiti.databaseType?:ActivitiConstants.DEFAULT_DATABASE_TYPE
+		            databaseSchemaUpdate = CH.config.activiti.databaseSchemaUpdate ? CH.config.activiti.databaseSchemaUpdate.toString() : ActivitiConstants.DEFAULT_DATABASE_SCHEMA_UPDATE
+		            deploymentName = CH.config.activiti.deploymentName?:ActivitiConstants.DEFAULT_DEPLOYMENT_NAME
+		            deploymentResources = CH.config.activiti.deploymentResources?:ActivitiConstants.DEFAULT_DEPLOYMENT_RESOURCES
+		            jobExecutorActivate = CH.config.activiti.jobExecutorActivate?:ActivitiConstants.DEFAULT_JOB_EXECUTOR_ACTIVATE
+					      history = CH.config.activiti.history?:ActivitiConstants.DEFAULT_HISTORY
+		            mailServerHost = CH.config.activiti.mailServerHost?:ActivitiConstants.DEFAULT_MAIL_SERVER_HOST
+		            mailServerPort = CH.config.activiti.mailServerPort?:ActivitiConstants.DEFAULT_MAIL_SERVER_PORT
+		            mailServerUsername = CH.config.activiti.mailServerUsername?:ActivitiConstants.DEFAULT_MAIL_SERVER_USERNAME
+		            mailServerPassword = CH.config.activiti.mailServerPassword?:ActivitiConstants.DEFAULT_MAIL_SERVER_PASSWORD
+		            mailServerDefaultFrom = CH.config.activiti.mailServerDefaultFrom?:ActivitiConstants.DEFAULT_MAIL_SERVER_FROM
+		            dataSource = ref("dataSource")
+		            transactionManager = ref("transactionManager")
+		        }
+				
+				  processEngine(org.activiti.spring.ProcessEngineFactoryBean) {
+					  processEngineConfiguration = ref("processEngineConfiguration")
+				  }
 		
-    	processEngineConfiguration(org.activiti.spring.SpringProcessEngineConfiguration) {
-            processEngineName = CH.config.activiti.processEngineName?:ActivitiConstants.DEFAULT_PROCESS_ENGINE_NAME
-            databaseType = CH.config.activiti.databaseType?:ActivitiConstants.DEFAULT_DATABASE_TYPE
-            databaseSchemaUpdate = CH.config.activiti.databaseSchemaUpdate ? CH.config.activiti.databaseSchemaUpdate.toString() : ActivitiConstants.DEFAULT_DATABASE_SCHEMA_UPDATE
-            deploymentName = CH.config.activiti.deploymentName?:ActivitiConstants.DEFAULT_DEPLOYMENT_NAME
-            deploymentResources = CH.config.activiti.deploymentResources?:ActivitiConstants.DEFAULT_DEPLOYMENT_RESOURCES
-            jobExecutorActivate = CH.config.activiti.jobExecutorActivate?:ActivitiConstants.DEFAULT_JOB_EXECUTOR_ACTIVATE
-			      history = CH.config.activiti.history?:ActivitiConstants.DEFAULT_HISTORY
-            mailServerHost = CH.config.activiti.mailServerHost?:ActivitiConstants.DEFAULT_MAIL_SERVER_HOST
-            mailServerPort = CH.config.activiti.mailServerPort?:ActivitiConstants.DEFAULT_MAIL_SERVER_PORT
-            mailServerUsername = CH.config.activiti.mailServerUsername?:ActivitiConstants.DEFAULT_MAIL_SERVER_USERNAME
-            mailServerPassword = CH.config.activiti.mailServerPassword?:ActivitiConstants.DEFAULT_MAIL_SERVER_PASSWORD
-            mailServerDefaultFrom = CH.config.activiti.mailServerDefaultFrom?:ActivitiConstants.DEFAULT_MAIL_SERVER_FROM
-            dataSource = ref("dataSource")
-            transactionManager = ref("transactionManager")
-        }
-		
-		  processEngine(org.activiti.spring.ProcessEngineFactoryBean) {
-			  processEngineConfiguration = ref("processEngineConfiguration")
+		    	runtimeService(processEngine:"getRuntimeService") 
+		        repositoryService(processEngine:"getRepositoryService")
+		    	taskService(processEngine:"getTaskService") 
+		    	managementService(processEngine:"getManagementService") 
+		    	identityService(processEngine:"getIdentityService")
+		    	historyService(processEngine:"getHistoryService")
+		        formService(processEngine:"getFormService")
+				
+		        activitiService(org.grails.activiti.ActivitiService) {
+		            runtimeService = ref("runtimeService")
+		            taskService = ref("taskService")
+		            identityService = ref("identityService")
+		            formService = ref("formService")
+		        }
 		  }
-
-    	runtimeService(processEngine:"getRuntimeService") 
-        repositoryService(processEngine:"getRepositoryService")
-    	taskService(processEngine:"getTaskService") 
-    	managementService(processEngine:"getManagementService") 
-    	identityService(processEngine:"getIdentityService")
-    	historyService(processEngine:"getHistoryService")
-        formService(processEngine:"getFormService")
-		
-        activitiService(org.grails.activiti.ActivitiService) {
-            runtimeService = ref("runtimeService")
-            taskService = ref("taskService")
-            identityService = ref("identityService")
-            formService = ref("formService")
-        }
     }
 
     def doWithDynamicMethods = { ctx ->
