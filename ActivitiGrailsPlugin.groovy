@@ -82,8 +82,8 @@ class ActivitiGrailsPlugin {
 					      history = CH.config.activiti.history?:ActivitiConstants.DEFAULT_HISTORY
 		            mailServerHost = CH.config.activiti.mailServerHost?:ActivitiConstants.DEFAULT_MAIL_SERVER_HOST
 		            mailServerPort = CH.config.activiti.mailServerPort?:ActivitiConstants.DEFAULT_MAIL_SERVER_PORT
-		            mailServerUsername = CH.config.activiti.mailServerUsername?:ActivitiConstants.DEFAULT_MAIL_SERVER_USERNAME
-		            mailServerPassword = CH.config.activiti.mailServerPassword?:ActivitiConstants.DEFAULT_MAIL_SERVER_PASSWORD
+		            mailServerUsername = CH.config.activiti.mailServerUsername
+		            mailServerPassword = CH.config.activiti.mailServerPassword
 		            mailServerDefaultFrom = CH.config.activiti.mailServerDefaultFrom?:ActivitiConstants.DEFAULT_MAIL_SERVER_FROM
 		            dataSource = ref("dataSource")
 		            transactionManager = ref("transactionManager")

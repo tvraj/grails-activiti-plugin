@@ -31,8 +31,6 @@ class ActivitiConstants {
 	static final Boolean DEFAULT_JOB_EXECUTOR_ACTIVATE = false
 	static final String DEFAULT_MAIL_SERVER_HOST = "mailServerHost not defined."
 	static final String DEFAULT_MAIL_SERVER_PORT = "mailServerPort not defined."
-	static final String DEFAULT_MAIL_SERVER_USERNAME = "mailServerUserName not defined."
-	static final String DEFAULT_MAIL_SERVER_PASSWORD = "mailServerPassword not defined."
 	static final String DEFAULT_MAIL_SERVER_FROM = "mailServerDefaultFrom not defined."
 	static final String PLUGIN_AUTO_DEPLOYMENT_NAME = "ActivitiPluginAutoDeploy"
 	static final String DEFAULT_SESSION_USERNAME_KEY = "username"
