@@ -32,6 +32,7 @@ class ActivitiService {
 	def identityService
 	def formService
 	String sessionUsernameKey = CH.config.activiti.sessionUsernameKey?:ActivitiConstants.DEFAULT_SESSION_USERNAME_KEY
+	String usernamePropertyName = CH.config.grails.plugins.springsecurity.userLookup.usernamePropertyName
 	
 	def startProcess(Map params) {
 		runtimeService.startProcessInstanceByKey(params.controller, params)
@@ -197,13 +198,19 @@ class ActivitiService {
 	def getCandidateUserIds(String taskId) {
 		def identityLinks = taskService.getIdentityLinksForTask(taskId)
 		def userIds = []
+		def users
 		identityLinks.each { identityLink -> 
 			if (identityLink.groupId) {
-			    userIds << identityService.createUserQuery()
-					           .memberOfGroup(identityLink.groupId)
-								     .orderByUserId().asc().list().collect { it.id }
+				users = identityService.createUserQuery()
+					      .memberOfGroup(identityLink.groupId)
+								.orderByUserId().asc().list()
+				if (AH.application.mainContext.pluginManager.hasGrailsPlugin('activitiSpringSecurity')) {				
+			    userIds << users?.collect { it."$usernamePropertyName" }
+				} else { 
+				  userIds << users?.collect { it.id }
+				}
 			} else {
-			    userIds << identityLink.userId
+			  userIds << identityLink.userId
 			}
 		}  		
 		return userIds.flatten().unique()
