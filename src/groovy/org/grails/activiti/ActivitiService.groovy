@@ -35,7 +35,11 @@ class ActivitiService {
 	String usernamePropertyName = CH.config.grails.plugins.springsecurity.userLookup.usernamePropertyName
 	
 	def startProcess(Map params) {
-		runtimeService.startProcessInstanceByKey(params.controller, params)
+		if (params.businessKey) {
+		  runtimeService.startProcessInstanceByKey(params.controller, params.businessKey, params)
+		} else {
+		  runtimeService.startProcessInstanceByKey(params.controller, params)
+		}
 	}		
 	
 	private findTasks(String methodName, String username, int firstResult, int maxResults, Map orderBy) {
