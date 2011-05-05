@@ -30,7 +30,7 @@ import org.grails.activiti.ActivitiConstants
  */
 class ActivitiGrailsPlugin {
     // the plugin version
-    def version = "5.4.1"
+    def version = "5.5"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.3.3 > *"
     // the other plugins this plugin depends on
@@ -162,7 +162,7 @@ class ActivitiGrailsPlugin {
         }
 				
         controllerClass.metaClass.deleteTask = { String taskId, String domainClassName = null ->
-            if (delegate.class != org.grails.activiti.TaskController) {
+            if (!domainClassName && delegate.class != org.grails.activiti.TaskController) {
                 domainClassName = getDomainClassName(delegate)
             }
             activitiService.deleteTask(taskId, domainClassName)
