@@ -50,8 +50,9 @@ private changeToJUnit4Style() {
 											formService:false, 
 											historyService:false]
 	removeLines = ["super.setUp()", "super.tearDown()", "@Override"]
-	assertProcessEndedItems = ["pi.getId":"assertProcessEnded(pi.getId())",
-	                           "processInstance.getId":"assertProcessEnded(processInstance.getId())"]
+	assertProcessEndedItems = ["pi.getId()":"assertProcessEnded(pi.getId())",
+	                           "processInstance.getId()":"assertProcessEnded(processInstance.getId())",
+							               "procId":"assertProcessEnded(procId)"]
 
 	new File("${basedir}/test/unit").eachFileRecurse { testFile ->
 		if (testFile.isFile() && testFile.text.indexOf(removeImport) > -1) {
@@ -81,7 +82,7 @@ private changeToJUnit4Style() {
 							file.writeLine '    assertNull("Process ended", activitiRule'
 							file.writeLine "               .getRuntimeService()"
 							file.writeLine "               .createProcessInstanceQuery()"
-							file.writeLine "               .processInstanceId(${isAssertProcessEndedFound(line, assertProcessEndedItems)}())"
+							file.writeLine "               .processInstanceId(${isAssertProcessEndedFound(line, assertProcessEndedItems)})"
 							file.writeLine "               .singleResult());"
 						} else { 
 							service = isActivitiServicesFound(line, activitiServices)
