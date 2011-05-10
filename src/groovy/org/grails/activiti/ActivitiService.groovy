@@ -156,7 +156,7 @@ class ActivitiService {
 	private setIdAndDomainClassName(String executionId, Map params) {
 		if (params.id) {
 			runtimeService.setVariable(executionId, "id", params.id)
-			runtimeService.setVariable(executionId, "domainClassName", params.domainClassName)
+			runtimeService.setVariable(executionId, "domainClassName", params.domainClassName as String)
 		}
 	}
 	
