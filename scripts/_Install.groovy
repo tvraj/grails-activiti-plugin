@@ -23,17 +23,6 @@
 
 ant.mkdir(dir:"${basedir}/src/taskforms")
 
-// Backup existing files
-if (new File("${basedir}/grails-app/views/index.gsp").exists())
-  ant.move file:"${basedir}/grails-app/views/index.gsp", tofile:"${basedir}/grails-app/views/index.bak"
-ant.move file:"${basedir}/web-app/images/grails_logo.png", tofile:"${basedir}/web-app/images/grails_logo.png.bak"
-ant.move file:"${basedir}/web-app/images/favicon.ico", tofile:"${basedir}/web-app/images/favicon.ico.bak"
-
-// Move plugin related files
-ant.move file:"${pluginBasedir}/grails-app/views/index.gsp", todir:"${basedir}/grails-app/views"
-ant.move file:"${pluginBasedir}/web-app/images/grails_activiti_logo.png", tofile:"${basedir}/web-app/images/grails_logo.png"
-ant.move file:"${pluginBasedir}/web-app/images/grails_activiti_favicon.ico", tofile:"${basedir}/web-app/images/favicon.ico"
-
 updateConfig()
 
 private void updateConfig() {
