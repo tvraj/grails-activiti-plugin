@@ -30,7 +30,7 @@ import org.grails.activiti.ActivitiConstants
  */
 class ActivitiGrailsPlugin {
     // the plugin version
-    def version = "5.5"
+    def version = "5.5.1"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.3.3 > *"
     // the other plugins this plugin depends on
@@ -69,7 +69,7 @@ class ActivitiGrailsPlugin {
     def doWithSpring = {
 		  def disabledActiviti = System.getProperty("disabledActiviti")
 		  
-		  if (!disabledActiviti) {
+		  if (!disabledActiviti && !CH.config.activiti.disabled) {
 		    	println "Activiti Process Engine Initialization..."	
 				
 		    	processEngineConfiguration(org.activiti.spring.SpringProcessEngineConfiguration) {
