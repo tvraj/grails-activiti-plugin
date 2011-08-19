@@ -111,10 +111,10 @@ class ActivitiService {
 	
 	private deleteDomainObject(String taskId, String domainClassName) {
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult()
-		String id = getDomainObjectId(task)
+		def id = getDomainObjectId(task)
 		if (id) {
 			def domainClass = AH.getApplication().classLoader.loadClass(domainClassName?:getDomainClassName(task))
-			domainClass.get(Long.valueOf(id))?.delete(flush: true)
+			domainClass.get(id)?.delete(flush: true)
 		}
 		return id
 	}
