@@ -30,7 +30,7 @@ import org.grails.activiti.ActivitiConstants
  */
 class ActivitiGrailsPlugin {
     // the plugin version
-    def version = "5.8"
+    def version = "5.8.1"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.3.3 > *"
     // the other plugins this plugin depends on
@@ -54,10 +54,9 @@ class ActivitiGrailsPlugin {
 
     // URL to the plugin's documentation
     def documentation = "http://grails.org/plugin/activiti"
-	
-    def watchedResources = CH.config.activiti.deploymentResources?:ActivitiConstants.DEFAULT_DEPLOYMENT_RESOURCES
-  	
-    def observe = ["controllers"]
+	  def confWatchedResources = [CH.config.activiti.deploymentResources, "file:./grails-app/controllers/**/*.groovy"].flatten()
+	  def defaultWatchedResources = [ActivitiConstants.DEFAULT_DEPLOYMENT_RESOURCES, "file:./grails-app/controllers/**/*.groovy"].flatten()
+    def watchedResources = confWatchedResources?:defaultWatchedResources
 	  
     String sessionUsernameKey = CH.config.activiti.sessionUsernameKey?:ActivitiConstants.DEFAULT_SESSION_USERNAME_KEY
     boolean useFormKey = CH.config.activiti.useFormKey?:ActivitiConstants.DEFAULT_USE_FORM_KEY
@@ -229,7 +228,7 @@ class ActivitiGrailsPlugin {
     }
 
     def onChange = { event ->
-        println "event.source = $event.source"
+        println "Reloading ${event.source}..."
         if (!(event.source instanceof Resource)) {  		  
             if(application.isControllerClass(event.source)) {
                 def controllerClass = application.addArtefact(ControllerArtefactHandler.TYPE, event.source)			
