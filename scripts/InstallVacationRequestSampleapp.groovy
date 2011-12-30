@@ -1,4 +1,4 @@
-/* Copyright 2010 the original author or authors.
+/* Copyright 2010-2012 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,13 @@
  *
  * @since 5.0.beta2
  */
- 
 includeTargets << grailsScript("Init")
+includeTargets << grailsScript("_PluginDependencies")
 
 packageName = ''
 vacationRequestDir="${activitiPluginDir}/src/sample-app/vacation-request"
 
-target(install: "Install Vacation Request Sample Application") {		
+target(install: "Install Vacation Request Sample Application") {	
 		ant.input(message:"Do you want to use Spring Security for identity service?",validargs:"y,n", addproperty:"enabledSpringSecurity")
 		enabledSpringSecurity = ant.antProject.properties["enabledSpringSecurity"] == 'y'
 		
@@ -33,6 +33,7 @@ target(install: "Install Vacation Request Sample Application") {
 			ant.input(message:"Enter package name for User and Role domain classes:", addproperty:"packageName")
 			packageName = ant.antProject.properties["packageName"]
 			installPluginForName "activiti-spring-security"
+			resolveDependencies()
 		}
 		
 		if (enabledSpringSecurity) {
@@ -89,6 +90,7 @@ packageToDir = { String packageName ->
 
 // copied from Spring Security Core Plugin: S2Quickstart.groovy
 private void copyControllersAndViews() {
+    String springSecurityCorePluginDir = getPluginDirForName('spring-security-core').path
 	  templateDir = "$springSecurityCorePluginDir/src/templates"
 	  appDir = "$basedir/grails-app"
 	  ant.mkdir dir: "$appDir/views/login"

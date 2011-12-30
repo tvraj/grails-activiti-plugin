@@ -9,3 +9,5 @@ syntax: regexp
 ^plugin\.xml$
 syntax: regexp
 ^src/docs$
+syntax: regexp
+^grails-activiti-5\.8\.2\.zip$
