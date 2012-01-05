@@ -88,21 +88,20 @@
 																		def userIds = ActivitiUtils.activitiService.getCandidateUserIds(taskInstance.id)
 																		def groups
 																		def groupIds
+                                                                                                                                                def User = grailsApplication.getDomainClass(grailsApplication.config.grails.plugins.springsecurity.userLookup.userDomainClassName).clazz
+                                                                                                                                                def users = []
 																		if (!applicationContext.getBean('pluginManager').hasGrailsPlugin('activitiSpringSecurity')) {
-																			for (id in userIds) {
-									                        groups = ActivitiUtils.identityService.createGroupQuery().groupMember(id).orderByGroupId().asc().list()
-									                        groupIds = groups?" ${groups.collect{it.id}}":""
-																			    userList[id]="${id}${groupIds}"
-									                                        }		       
+                                                                                                                                                  users = User."findAllByIdInList"(userIds)
 																		} else {
-																		  def User = grailsApplication.getDomainClass(grailsApplication.config.grails.plugins.springsecurity.userLookup.userDomainClassName).clazz
-																		  def users = User."findAllBy${GrailsNameUtils.getClassNameRepresentation(grailsApplication.config.grails.plugins.springsecurity.userLookup.usernamePropertyName)}InList"(userIds)
-																			for (user in users) {
+																		  users = User."findAllBy${GrailsNameUtils.getClassNameRepresentation(grailsApplication.config.grails.plugins.springsecurity.userLookup.usernamePropertyName)}InList"(userIds)
+																		}
+                                                                        
+                                                                
+                                                                                                                                                for (user in users) {
 															          groups = ActivitiUtils.identityService.createGroupQuery().groupMember(user.id).orderByGroupId().asc().list()
 															          groupIds = groups?" ${groups.collect{it.name}}":""
 																				userList[user.username]="${user.username}${groupIds}"
 																			}
-																		}
 																 %>                            
 							                <g:form action="setAssignee">
 							                  <g:hiddenField name="taskId" value="${taskInstance.id}" />
